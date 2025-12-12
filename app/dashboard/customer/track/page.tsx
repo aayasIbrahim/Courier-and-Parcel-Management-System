@@ -3,8 +3,6 @@
 import { useState, useEffect } from "react";
 import { io, Socket } from "socket.io-client";
 import { GoogleMap, Marker, useJsApiLoader } from "@react-google-maps/api";
-import Layout from "@/components/ul/Layout";
-import { customerLinks } from "@/data/sidebarLinks";
 import { Map } from "lucide-react";
 
 interface Parcel {
@@ -68,7 +66,7 @@ export default function TrackParcelPage() {
     selectedParcel?.currentLocation || { lat: 23.8103, lng: 90.4125 };
 
   return (
-    <Layout title="Track Parcel" links={customerLinks} role="Customer" username="Ali Khan">
+
       <div className="max-w-4xl mx-auto space-y-6">
         <h2 className="text-xl font-semibold flex items-center gap-2">
           <Map className="h-5 w-5" /> Track Parcel
@@ -108,6 +106,6 @@ export default function TrackParcelPage() {
           <p className="text-gray-500">Select a parcel to track its location</p>
         )}
       </div>
-    </Layout>
+
   );
 }
