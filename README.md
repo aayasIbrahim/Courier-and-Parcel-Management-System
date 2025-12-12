@@ -14,85 +14,94 @@ It supports multiple user roles (admin, delivery agent, customer), parcel bookin
 
 ## 📁 Folder Structure
 
-your-project/
+app/
 │
-├── app/
-│   ├── api/
-│   │   ├── auth/
-│   │   │   └── [...nextauth]/route.ts        # NextAuth login/logout
-│   │   ├── auth/
-│   │   │   └── register/route.ts             # User registration
+├── dashboard/
+│   ├── admin/
+│   │   ├── layout.tsx               # Admin layout (uses reusable Layout component)
+│   │   ├── page.tsx                 # Admin dashboard home
 │   │   ├── parcels/
-│   │   │   ├── route.ts                       # GET all, POST create parcel
-│   │   │   └── [id]/route.ts                 # GET, PATCH, DELETE parcel
-│   │   ├── tracking/
-│   │   │   └── [parcelId]/route.ts           # Track parcel history CRUD
-│   │   ├── agents/
-│   │   │   └── assign/route.ts               # Assign parcel to agent
-│   │   └── users/
-│   │       ├── route.ts                       # Admin: view all users
-│   │       └── [id]/route.ts                 # Admin: single user CRUD
+│   │   │   ├── page.tsx             # All parcels
+│   │   │   ├── pending/page.tsx
+│   │   │   ├── delivered/page.tsx
+│   │   │   ├── failed/page.tsx
+│   │   │   └── [id]/page.tsx        # Parcel details
+│   │   ├── assign/page.tsx          # Assign agent page
+│   │   ├── users/
+│   │   │   ├── page.tsx             # All users
+│   │   │   ├── agents/page.tsx
+│   │   │   └── customers/page.tsx
+│   │   ├── reports/page.tsx
+│   │   └── settings/page.tsx
 │   │
-│   ├── dashboard/
-│   │   ├── admin/page.tsx                     # Admin dashboard
-│   │   ├── agent/page.tsx                     # Agent dashboard
-│   │   └── customer/page.tsx                  # Customer dashboard
+│   ├── agent/
+│   │   ├── layout.tsx
+│   │   ├── page.tsx                 # Assigned parcels
+│   │   ├── status/
+│   │   │   ├── picked/page.tsx
+│   │   │   ├── transit/page.tsx
+│   │   │   ├── delivered/page.tsx
+│   │   │   └── failed/page.tsx
+│   │   ├── route/page.tsx           # Route optimization map
+│   │   └── profile/page.tsx
 │   │
-│   ├── login/page.tsx                          # Login page
-│   ├── register/page.tsx                       # Registration page
+│   └── customer/
+│       ├── layout.tsx
+│       ├── page.tsx                 # Home
+│       ├── book/page.tsx            # Parcel booking
+│       ├── history/page.tsx         # Booking history
+│       ├── track/
+│       │   └── [id]/page.tsx        # Parcel tracking map
+│       └── profile/page.tsx
+│
+├── api/
+│   ├── auth/                        # NextAuth routes
 │   ├── parcels/
-│   │   └── create/page.tsx                     # Parcel booking form
-│   ├── layout.tsx                              # App layout (Header + Sidebar)
-│   └── page.tsx                                # Landing page / Home
+│   │   ├── route.ts
+│   │   └── [id]/route.ts
+│   └── users/
+│       ├── route.ts
+│       └── [id]/route.ts
 │
 ├── components/
-│   ├── auth/
-│   │   ├── LoginForm.tsx
-│   │   └── RegisterForm.tsx
-│   ├── cards/
-│   │   └── MetricCard.tsx
-│   ├── tables/
-│   │   ├── ParcelTable.tsx
-│   │   ├── UsersTable.tsx
-│   │   └── TrackingTable.tsx
-│   ├── maps/
-│   │   └── ParcelMap.tsx
 │   ├── ui/
-│   │   ├── Button.tsx
-│   │   ├── Input.tsx
-│   │   ├── Modal.tsx
-│   │   └── Badge.tsx
-│   └── layout/
-│       ├── Header.tsx
-│       └── Sidebar.tsx
+│   │   ├── Layout.tsx                # Reusable layout (Navbar + Sidebar)
+│   │   ├── Navbar.tsx
+│   │   └── Sidebar.tsx
+│   │
+│   ├── admin/
+│   │   ├── MetricCard.tsx
+│   │   ├── ParcelTable.tsx
+│   │   └── UserTable.tsx
+│   │
+│   ├── agent/
+│   │   ├── ParcelTable.tsx
+│   │   └── ParcelMap.tsx
+│   │
+│   └── customer/
+│       ├── BookingForm.tsx
+│       ├── BookingTable.tsx
+│       └── ParcelMap.tsx
+│
+├── lib/
+│   ├── db.ts                         # MongoDB connection
+│   ├── utils.ts                      # Utility functions like 'cn'
+│   └── api/                          # RTK Query API slices
+│       ├── parcels.ts
+│       └── users.ts
 │
 ├── models/
 │   ├── User.ts
 │   ├── Parcel.ts
 │   └── Tracking.ts
 │
-├── lib/
-│   ├── connectDB.ts                            # MongoDB connection
-│   ├── authOptions.ts                           # NextAuth options
-│   └── verifyRole.ts                            # Role-based access middleware
+├── styles/
+│   └── globals.css
 │
-├── redux/
-│   ├── store.ts
-│   ├── slices/
-│   │   ├── parcelSlice.ts
-│   │   └── trackingSlice.ts
-│   └── api/
-│       └── parcelApi.ts                        # RTK Query endpoints
-│
-├── middleware.ts                                # Protect routes / role-based
-├── utils/
-│   ├── constants.ts
-│   └── helpers.ts
-├── public/
-│   └── assets/                                 # Images, icons, logos
-├── .env
-├── package.json
-└── tailwind.config.js
+├── env.d.ts
+├── next-env.d.ts
+└── next.config.js
+
 
  import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
