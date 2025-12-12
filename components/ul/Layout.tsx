@@ -33,7 +33,7 @@ export default function Layout({ title, links, role, username, children }: Layou
       />
 
       {/* Main content */}
-      <main className="pt-16 md:ml-64 p-4 transition-all duration-300 mt-[100px]">
+      <main className=" md:ml-64 p-4 transition-all duration-300 mt-[100px]">
         {children}
       </main>
     </div>

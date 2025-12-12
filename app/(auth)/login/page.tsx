@@ -3,19 +3,22 @@
 import { useState } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { verifyRole } from "@/utils/verifyRole";
 
 export default function LoginPage() {
   const router = useRouter();
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const handleLogin = async (e: any) => {
+  // Correct event type → React.FormEvent<HTMLFormElement>
+  const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError("");
     setLoading(true);
 
-    const email = e.target.email.value.toLowerCase();
-    const password = e.target.password.value;
+    const form = e.currentTarget;
+    const email = form.email.value.toLowerCase();
+    const password = form.password.value;
 
     const res = await signIn("credentials", {
       redirect: false,
@@ -30,8 +33,14 @@ export default function LoginPage() {
       return;
     }
 
-    // Redirect based on role → optional improvement
-    router.push("/dashboard");
+    // Get session to check role
+    const sessionRes = await fetch("/api/auth/session");
+    const session = await sessionRes.json();
+
+    const role = session?.user?.role;
+
+    // 🔥 Redirect based on role
+    verifyRole(router, role);
   };
 
   return (
@@ -73,7 +82,7 @@ export default function LoginPage() {
         </button>
 
         <p className="text-sm text-center mt-3">
-          Don,t have an account?{" "}
+          Don't have an account?{" "}
           <a href="/register" className="text-blue-600 underline">
             Register
           </a>

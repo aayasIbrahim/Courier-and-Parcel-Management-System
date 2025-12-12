@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import dbConnect from "@/lib/db";
 import Parcel from "@/models/Percel";
 import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/authOption"; 
+import { authOptions } from "@/lib/authOption";
 
 // -------------------- GET ALL PARCELS --------------------
 export async function GET() {
@@ -23,7 +23,9 @@ export async function GET() {
 
   // CUSTOMER → get own parcels
   if (session.user.role === "customer") {
-    const parcels = await Parcel.find({ customer: session.user.id }).populate("agent");
+    const parcels = await Parcel.find({ customer: session.user.id }).populate(
+      "agent"
+    );
     return NextResponse.json(parcels);
   }
 
@@ -42,7 +44,7 @@ export async function POST(request: NextRequest) {
 
   const data = await request.json();
   const { pickupAddress, deliveryAddress, size, type, paymentType } = data;
-
+  console.log("Received parcel data:", data);
   const newParcel = await Parcel.create({
     pickupAddress,
     deliveryAddress,
@@ -53,4 +55,5 @@ export async function POST(request: NextRequest) {
   });
 
   return NextResponse.json(newParcel, { status: 201 });
+  console.log("Parcel created:", newParcel);
 }

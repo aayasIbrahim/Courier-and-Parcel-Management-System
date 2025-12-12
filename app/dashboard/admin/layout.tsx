@@ -1,3 +1,4 @@
+"use client"
 import Layout from "@/components/ul/Layout";
 import { adminLinks } from "@/data/sidebarLinks";
 
