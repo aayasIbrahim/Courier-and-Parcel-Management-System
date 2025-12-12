@@ -15,7 +15,7 @@ const AgentDashboard = () => {
 
       {/* Route Map */}
       <div>
-        <h2 className="text-xl font-semibold mb-2">Delivery Route</h2>
+        <h2 className="text-xl font-semibold mb-2 z-1">Delivery Route</h2>
         <ParcelMap />
       </div>
     </div>
