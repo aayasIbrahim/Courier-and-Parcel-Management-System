@@ -16,7 +16,7 @@ export default function Layout({ title, links, role, username, children }: Layou
   const [isSidebarOpen, setSidebarOpen] = useState(false);
 
   return (
-    <div className="relative min-h-screen bg-gray-100">
+    <div className="relative min-h-screen ">
       {/* Navbar */}
       <Navbar
         title={title}
@@ -33,7 +33,7 @@ export default function Layout({ title, links, role, username, children }: Layou
       />
 
       {/* Main content */}
-      <main className="pt-16 md:ml-64 p-4 transition-all duration-300">
+      <main className="pt-16 md:ml-64 p-4 transition-all duration-300 mt-[100px]">
         {children}
       </main>
     </div>
