@@ -1,4 +1,16 @@
-import { Truck, CheckCircle, Map, User,LayoutDashboard,  Users, FileText, Settings,List, Package,  } from "lucide-react";
+import {
+  Truck,
+  LogOut,
+  CheckCircle,
+  Map,
+  User,
+  LayoutDashboard,
+  Users,
+  FileText,
+  Settings,
+  List,
+  Package,
+} from "lucide-react";
 
 export const agentLinks = [
   { name: "Assigned Parcels", href: "/dashboard/agent", icon: Truck },
@@ -14,8 +26,8 @@ export const agentLinks = [
   },
   { name: "Route Optimization", href: "/dashboard/agent/route", icon: Map },
   { name: "Profile", href: "/dashboard/agent/profile", icon: User },
+  { name: "Logout", href: "#", icon: LogOut, isLogout: true }
 ];
-
 
 export const adminLinks = [
   { name: "Dashboard", href: "/dashboard/admin", icon: LayoutDashboard },
@@ -41,12 +53,13 @@ export const adminLinks = [
   },
   { name: "Reports", href: "/dashboard/admin/reports", icon: FileText },
   { name: "Settings", href: "/dashboard/admin/settings", icon: Settings },
+  { name: "Logout", href: "#", icon: LogOut, isLogout: true },
 ];
-
 
 export const customerLinks = [
   { name: "My Parcels", href: "/dashboard/customer", icon: List },
   { name: "Book Parcel", href: "/dashboard/customer/book", icon: Package },
   { name: "Track Parcel", href: "/dashboard/customer/track", icon: Map },
   { name: "Profile", href: "/dashboard/customer/profile", icon: User },
+  { name: "Logout", href: "#", icon: LogOut, isLogout: true },
 ];
