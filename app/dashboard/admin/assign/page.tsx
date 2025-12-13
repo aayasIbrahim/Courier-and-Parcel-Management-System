@@ -3,20 +3,23 @@
 import { useEffect, useState } from "react";
 import { UserPlus, Loader2 } from "lucide-react";
 
-interface Parcel {
-  _id: string;
-  pickupAddress: string;
-  deliveryAddress: string;
-  type: string;
-  status: string;
-}
-
+/* ---------------- TYPES ---------------- */
 interface Agent {
   _id: string;
   name: string;
   email: string;
 }
 
+interface Parcel {
+  _id: string;
+  pickupAddress: string;
+  deliveryAddress: string;
+  type: string;
+  status: string;
+  agent?: Agent;
+}
+
+/* ---------------- PAGE ---------------- */
 export default function AssignAgentsPage() {
   const [parcels, setParcels] = useState<Parcel[]>([]);
   const [agents, setAgents] = useState<Agent[]>([]);
@@ -24,6 +27,7 @@ export default function AssignAgentsPage() {
   const [assigningId, setAssigningId] = useState<string | null>(null);
   const [message, setMessage] = useState("");
 
+  /* -------- FETCH DATA -------- */
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -47,6 +51,7 @@ export default function AssignAgentsPage() {
     fetchData();
   }, []);
 
+  /* -------- ASSIGN AGENT -------- */
   const assignAgent = async (parcelId: string, agentId: string) => {
     setAssigningId(parcelId);
     setMessage("");
@@ -55,12 +60,18 @@ export default function AssignAgentsPage() {
       const res = await fetch(`/api/parcels/${parcelId}/assign`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
+        credentials: "include",
         body: JSON.stringify({ agentId }),
       });
 
       if (!res.ok) throw new Error();
 
-      setParcels((prev) => prev.filter((p) => p._id !== parcelId));
+      const updatedParcel: Parcel = await res.json();
+
+      setParcels((prev) =>
+        prev.map((p) => (p._id === parcelId ? updatedParcel : p))
+      );
+
       setMessage("Agent assigned successfully ✅");
     } catch {
       setMessage("Failed to assign agent ❌");
@@ -69,6 +80,7 @@ export default function AssignAgentsPage() {
     }
   };
 
+  /* ---------------- UI ---------------- */
   return (
     <div className="p-4 md:p-6 space-y-6">
       {/* Header */}
@@ -90,24 +102,38 @@ export default function AssignAgentsPage() {
         </div>
       )}
 
-      {/* Desktop Table */}
+      {/* ---------------- DESKTOP TABLE ---------------- */}
       {!loading && parcels.length > 0 && (
         <div className="hidden md:block bg-white rounded shadow overflow-x-auto">
           <table className="w-full text-sm">
             <thead className="bg-gray-100">
               <tr>
-                <th className="p-3 text-left">Parcel</th>
+                <th className="p-3 text-left">Parcel ID</th>
                 <th className="p-3 text-left">Route</th>
-                <th className="p-3 text-left">Assign Agent</th>
+                <th className="p-3 text-left">Agent</th>
+                <th className="p-3 text-left">Assign</th>
               </tr>
             </thead>
+
             <tbody>
               {parcels.map((p) => (
                 <tr key={p._id} className="border-t">
                   <td className="p-3 font-mono text-xs">{p._id}</td>
+
                   <td className="p-3 text-xs">
                     {p.pickupAddress} → {p.deliveryAddress}
                   </td>
+
+                  <td className="p-3 text-xs">
+                    {p.agent ? (
+                      <span className="text-green-600 font-medium">
+                        {p.agent.name}
+                      </span>
+                    ) : (
+                      <span className="text-gray-400">Not assigned</span>
+                    )}
+                  </td>
+
                   <td className="p-3">
                     <select
                       className="border rounded px-2 py-1 text-sm"
@@ -132,16 +158,25 @@ export default function AssignAgentsPage() {
         </div>
       )}
 
-      {/* Mobile Cards */}
+      {/* ---------------- MOBILE CARDS ---------------- */}
       {!loading && parcels.length > 0 && (
         <div className="md:hidden space-y-4">
           {parcels.map((p) => (
-            <div key={p._id} className="bg-white rounded shadow p-4 space-y-3">
+            <div
+              key={p._id}
+              className="bg-white rounded shadow p-4 space-y-3"
+            >
               <div className="text-xs font-mono">{p._id}</div>
 
               <div className="text-xs text-gray-600">
                 {p.pickupAddress} → {p.deliveryAddress}
               </div>
+
+              {p.agent && (
+                <div className="text-xs text-green-600">
+                  Assigned to: {p.agent.name}
+                </div>
+              )}
 
               <select
                 className="w-full border rounded px-3 py-2 text-sm"
@@ -164,7 +199,9 @@ export default function AssignAgentsPage() {
       )}
 
       {!loading && parcels.length === 0 && (
-        <p className="text-gray-500">No parcels waiting for assignment.</p>
+        <p className="text-gray-500">
+          No parcels waiting for assignment.
+        </p>
       )}
     </div>
   );
