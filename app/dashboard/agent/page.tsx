@@ -1,3 +1,5 @@
+
+
 import React from "react";
 import ParcelTable from "@/components/tables/ParcelTable";
 import ParcelMap from "@/components/maps/ParcelMap";
