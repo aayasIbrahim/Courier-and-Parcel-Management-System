@@ -26,7 +26,7 @@ export const agentLinks = [
   },
   { name: "Route Optimization", href: "/dashboard/agent/route", icon: Map },
   { name: "Profile", href: "/dashboard/agent/profile", icon: User },
-  { name: "Logout", href: "#", icon: LogOut, isLogout: true }
+  { name: "Logout", href: "#", icon: LogOut, isLogout: true },
 ];
 
 export const adminLinks = [
@@ -52,7 +52,16 @@ export const adminLinks = [
     ],
   },
   { name: "Reports", href: "/dashboard/admin/reports", icon: FileText },
-  { name: "Settings", href: "/dashboard/admin/settings", icon: Settings },
+  {
+    name: "Settings",
+    icon: Settings,
+    children: [
+      { name: "General", href: "/dashboard/admin/settings" },
+      { name: "Parcel", href: "/dashboard/admin/settings/parcel" },
+      { name: "Charge", href: "/dashboard/admin/settings/charge" },
+      { name: "Payment", href: "/dashboard/admin/settings/payment" },
+    ],
+  },
   { name: "Logout", href: "#", icon: LogOut, isLogout: true },
 ];
 

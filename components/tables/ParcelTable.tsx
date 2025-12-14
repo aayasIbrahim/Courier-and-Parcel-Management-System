@@ -1,37 +1,52 @@
-import React from "react";
+"use client";
+
+import React, { useEffect, useState } from "react";
+
+interface Parcel {
+  _id: string;
+  pickupAddress: string;
+  deliveryAddress: string;
+  status: string;
+  customer?: { name: string };
+  agent?: { name: string };
+}
 
 interface ParcelTableProps {
-  assignedOnly?: boolean;   // For agent dashboard
-  customerOnly?: boolean;   // For customer dashboard
+  assignedOnly?: boolean; // For agent dashboard
+  customerOnly?: boolean; // For customer dashboard
 }
 
 const ParcelTable: React.FC<ParcelTableProps> = ({ assignedOnly, customerOnly }) => {
-  // TODO: Replace with real API data
-  const parcels = [
-    {
-      id: "1",
-      pickupAddress: "Dhaka",
-      deliveryAddress: "Chittagong",
-      status: "In Transit",
-      customer: "John Doe",
-      agent: "Agent 1",
-    },
-    {
-      id: "2",
-      pickupAddress: "Sylhet",
-      deliveryAddress: "Dhaka",
-      status: "Delivered",
-      customer: "Alice",
-      agent: "Agent 2",
-    },
-  ];
+  const [parcels, setParcels] = useState<Parcel[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
-  // Optional filtering
-  const filteredParcels = parcels.filter(p => {
-    if (assignedOnly) return p.agent === "Agent 1"; // Example filter
-    if (customerOnly) return p.customer === "John Doe"; // Example filter
-    return true;
-  });
+  useEffect(() => {
+    const fetchParcels = async () => {
+      try {
+        let url = "/api/parcels";
+        if (assignedOnly) url += "?assigned=true";
+        if (customerOnly) url += "?customer=true";
+
+        const res = await fetch(url, { credentials: "include" });
+        if (!res.ok) throw new Error("Failed to fetch parcels");
+
+        const data = await res.json();
+        setParcels(data.parcels || data); // in case API returns { parcels: [...] }
+      } catch (err) {
+        console.error(err);
+        setError("Failed to load parcels");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchParcels();
+  }, [assignedOnly, customerOnly]);
+
+  if (loading) return <p className="text-gray-500 p-4">Loading parcels...</p>;
+  if (error) return <p className="text-red-500 p-4">{error}</p>;
+  if (parcels.length === 0) return <p className="text-gray-500 p-4">No parcels found.</p>;
 
   return (
     <div className="overflow-x-auto bg-white rounded shadow">
@@ -47,14 +62,14 @@ const ParcelTable: React.FC<ParcelTableProps> = ({ assignedOnly, customerOnly })
           </tr>
         </thead>
         <tbody className="divide-y divide-gray-200">
-          {filteredParcels.map(parcel => (
-            <tr key={parcel.id}>
-              <td className="px-4 py-2">{parcel.id}</td>
+          {parcels.map((parcel) => (
+            <tr key={parcel._id}>
+              <td className="px-4 py-2">{parcel._id}</td>
               <td className="px-4 py-2">{parcel.pickupAddress}</td>
               <td className="px-4 py-2">{parcel.deliveryAddress}</td>
               <td className="px-4 py-2">{parcel.status}</td>
-              <td className="px-4 py-2">{parcel.customer}</td>
-              <td className="px-4 py-2">{parcel.agent}</td>
+              <td className="px-4 py-2">{parcel.customer?.name || "N/A"}</td>
+              <td className="px-4 py-2">{parcel.agent?.name || "Unassigned"}</td>
             </tr>
           ))}
         </tbody>

@@ -1,7 +1,9 @@
-import React, { useState } from "react";
+"use client";
+
+import React, { useEffect, useState } from "react";
 
 interface User {
-  id: string;
+  _id: string;
   name: string;
   email: string;
   role: "admin" | "agent" | "customer";
@@ -10,18 +12,39 @@ interface User {
 }
 
 interface UsersTableProps {
-  users?: User[]; // Optional prop, later fetch from API
+  roleFilter?: "admin" | "agent" | "customer"; // Optional role filter
 }
 
-const UsersTable: React.FC<UsersTableProps> = ({ users }) => {
-  // Example static users (replace with API data)
-  const [userList] = useState<User[]>(
-    users || [
-      { id: "1", name: "John Doe", email: "john@example.com", role: "customer", phone: "017XXXXXXXX", address: "Dhaka" },
-      { id: "2", name: "Alice Admin", email: "alice@example.com", role: "admin", phone: "018XXXXXXXX", address: "Chittagong" },
-      { id: "3", name: "Agent 1", email: "agent1@example.com", role: "agent", phone: "019XXXXXXXX", address: "Sylhet" },
-    ]
-  );
+const UsersTable: React.FC<UsersTableProps> = ({ roleFilter }) => {
+  const [users, setUsers] = useState<User[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        let url = "/api/users";
+        if (roleFilter) url += `?role=${roleFilter}`;
+
+        const res = await fetch(url, { credentials: "include" });
+        if (!res.ok) throw new Error("Failed to fetch users");
+
+        const data = await res.json();
+        setUsers(data.users || data);
+      } catch (err) {
+        console.error(err);
+        setError("Failed to load users");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUsers();
+  }, [roleFilter]);
+
+  if (loading) return <p className="text-gray-500 p-4">Loading users...</p>;
+  if (error) return <p className="text-red-500 p-4">{error}</p>;
+  if (users.length === 0) return <p className="text-gray-500 p-4">No users found.</p>;
 
   return (
     <div className="overflow-x-auto bg-white rounded shadow">
@@ -37,9 +60,9 @@ const UsersTable: React.FC<UsersTableProps> = ({ users }) => {
           </tr>
         </thead>
         <tbody className="divide-y divide-gray-200">
-          {userList.map((user) => (
-            <tr key={user.id}>
-              <td className="px-4 py-2">{user.id}</td>
+          {users.map((user) => (
+            <tr key={user._id}>
+              <td className="px-4 py-2">{user._id}</td>
               <td className="px-4 py-2">{user.name}</td>
               <td className="px-4 py-2">{user.email}</td>
               <td className="px-4 py-2 capitalize">{user.role}</td>
