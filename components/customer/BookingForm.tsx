@@ -12,9 +12,13 @@ interface BookingForm {
 }
 
 const parcelSizes = ["Small", "Medium", "Large", "Extra Large"];
-const parcelTypes = ["Normal", "Fragile", "Liquid", "Electronics","Documents", "Clothing", "Other"];
+const parcelTypes = ["Normal", "Fragile", "Liquid", "Electronics", "Documents", "Clothing", "Other"];
 
-export default function BookingForm() {
+interface BookingFormProps {
+  onSuccess?: (data: { id: string; type: string }) => void;
+}
+
+export default function BookingForm({ onSuccess }: BookingFormProps) {
   const [form, setForm] = useState<BookingForm>({
     pickupAddress: "",
     deliveryAddress: "",
@@ -22,7 +26,6 @@ export default function BookingForm() {
     type: "",
     paymentType: "COD",
   });
-
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
 
@@ -46,6 +49,11 @@ export default function BookingForm() {
 
       const data = await res.json();
       setMessage(`📦 Parcel booked successfully!\nID: ${data._id}\nType: ${data.type}`);
+
+      // Call parent callback if provided
+      onSuccess?.({ id: data._id, type: data.type });
+
+      // Reset form
       setForm({ pickupAddress: "", deliveryAddress: "", size: "", type: "", paymentType: "COD" });
     } catch {
       setMessage("❌ Something went wrong. Please try again.");
