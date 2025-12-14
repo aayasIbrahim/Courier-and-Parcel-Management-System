@@ -22,7 +22,7 @@ export async function GET(
     }
 
     return NextResponse.json(parcel, { status: 200 });
-  } catch (error) {
+  } catch  {
     return NextResponse.json(
       { message: "Internal Server Error" },
       { status: 500 }
@@ -56,7 +56,7 @@ export async function PATCH(
     }
 
     return NextResponse.json(updatedParcel, { status: 200 });
-  } catch (error) {
+  } catch  {
     return NextResponse.json(
       { message: "Failed to update parcel" },
       { status: 500 }
@@ -87,7 +87,7 @@ export async function DELETE(
       { message: "Parcel deleted successfully" },
       { status: 200 }
     );
-  } catch (error) {
+  } catch {
     return NextResponse.json(
       { message: "Failed to delete parcel" },
       { status: 500 }

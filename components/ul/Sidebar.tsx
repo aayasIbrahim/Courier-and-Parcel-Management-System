@@ -44,7 +44,9 @@ export default function Sidebar({ links, isOpen, closeSidebar }: SidebarProps) {
           isOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
         )}
       >
-        <h2 className="text-2xl font-bold mb-6">Dashboard</h2>
+        <h2 className="font-bold text-xl mb-6">
+          Courier <span className="text-blue-600">Management</span>
+        </h2>
 
         <nav className="space-y-1">
           {links.map((item) => (
@@ -104,7 +106,8 @@ export default function Sidebar({ links, isOpen, closeSidebar }: SidebarProps) {
                             onClick={() => signOut({ callbackUrl: "/" })}
                             className={cn(
                               "block text-sm px-2 py-1 rounded hover:bg-red-100 text-red-600 w-full",
-                              pathname === sub.href && "bg-red-200 font-semibold"
+                              pathname === sub.href &&
+                                "bg-red-200 font-semibold"
                             )}
                           >
                             {sub.name}
@@ -116,7 +119,8 @@ export default function Sidebar({ links, isOpen, closeSidebar }: SidebarProps) {
                             onClick={closeSidebar}
                             className={cn(
                               "block text-sm px-2 py-1 rounded hover:bg-gray-100",
-                              pathname === sub.href && "bg-gray-200 font-semibold"
+                              pathname === sub.href &&
+                                "bg-gray-200 font-semibold"
                             )}
                           >
                             {sub.name}
