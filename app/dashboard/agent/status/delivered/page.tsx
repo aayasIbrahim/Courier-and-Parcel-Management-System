@@ -35,6 +35,7 @@ export default function DeliveredPage() {
   }, []);
 
   return (
+    <>
     <div className="max-w-3xl mx-auto p-6 bg-white rounded shadow-md space-y-6">
       <h2 className="text-2xl font-bold">Delivered Parcels</h2>
 
@@ -73,5 +74,7 @@ export default function DeliveredPage() {
         <div className="p-3 rounded bg-red-100 text-red-800 whitespace-pre-line">{message}</div>
       )}
     </div>
+    <ParcelTable assignedOnly={true} />
+    </>
   );
 }
