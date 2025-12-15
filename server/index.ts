@@ -1,50 +1,40 @@
+// server.ts
 import express from "express";
 import http from "http";
 import { Server } from "socket.io";
-import cors from "cors";
-import dotenv from "dotenv";
-
-dotenv.config(); // Load .env variables
-
-interface Parcel {
-  _id: string;
-  currentLocation: { lat: number; lng: number };
-  status: string;
-}
+// import cors from "cors";
 
 const app = express();
 
-// Enable JSON request body parsing
+// Enable JSON parsing
 app.use(express.json());
 
-// CORS config (reads from .env)
-app.use(
-  cors({
-    origin: process.env.CLIENT_URL, // Next.js frontend
-    credentials: true,
-  })
-);
+// Optional: REST API endpoints
+app.get("/api/test", (req, res) => res.json({ message: "Server working" }));
 
+// Create HTTP server
 const server = http.createServer(app);
 
-// Socket.IO setup
+// Socket.IO setup with CORS
 const io = new Server(server, {
   cors: {
-    origin: process.env.CLIENT_URL,
+    origin: "http://localhost:3000", // Next.js frontend
     methods: ["GET", "POST"],
+    credentials: true,
   },
 });
 
-// Track connected clients
 io.on("connection", (socket) => {
   console.log("Client connected:", socket.id);
 
-  // Listen for parcel updates from delivery agents
-  socket.on("updateParcel", (parcel: Parcel) => {
-    console.log("Parcel update received:", parcel);
+  socket.on("joinParcel", (parcelId) => {
+    socket.join(parcelId);
+    console.log("Joined parcel room:", parcelId);
+  });
 
-    // Broadcast to all customers
-    io.emit("parcelUpdate", parcel);
+  socket.on("updateParcel", (parcel) => {
+    console.log("Parcel update:", parcel);
+    io.to(parcel._id).emit("parcelUpdate", parcel);
   });
 
   socket.on("disconnect", () => {
@@ -52,13 +42,5 @@ io.on("connection", (socket) => {
   });
 });
 
-// Test endpoint
-app.get("/", (req, res) => {
-  res.send("Courier management Socket.IO server is running 🚀");
-});
-
 // Start server
-const PORT = process.env.PORT || 4000;
-server.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
-});
+server.listen(4000, () => console.log("Socket.IO server running on port 4000"));
