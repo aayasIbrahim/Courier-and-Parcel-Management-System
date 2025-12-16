@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/authOption";
 import dbConnect from "@/lib/db";
-import Parcel, { IParcel } from "@/models/Percel";
+import Parcel, { IParcel } from "@/models/Parcel";
 
 interface ParcelFilter {
   customer?: string;
@@ -33,7 +33,10 @@ export async function GET(req: Request) {
 
     // Type guard: only assign if valid
     let status: IParcel["status"] | undefined;
-    if (statusParam && validStatuses.includes(statusParam as IParcel["status"])) {
+    if (
+      statusParam &&
+      validStatuses.includes(statusParam as IParcel["status"])
+    ) {
       status = statusParam as IParcel["status"];
     }
 
@@ -66,36 +69,22 @@ export async function GET(req: Request) {
   }
 }
 
-
 // -------------------- CREATE PARCEL (CUSTOMER ONLY) --------------------
 export async function POST(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
 
     if (!session || session.user.role !== "customer") {
-      return NextResponse.json(
-        { message: "Forbidden" },
-        { status: 403 }
-      );
+      return NextResponse.json({ message: "Forbidden" }, { status: 403 });
     }
 
     await dbConnect();
 
-    const {
-      pickupAddress,
-      deliveryAddress,
-      size,
-      type,
-      paymentType,
-    } = await request.json();
+    const { pickupAddress, deliveryAddress, size, type, paymentType } =
+      await request.json();
 
     // ✅ Validation
-    if (
-      !pickupAddress ||
-      !deliveryAddress ||
-      !size ||
-      !type
-    ) {
+    if (!pickupAddress || !deliveryAddress || !size || !type) {
       return NextResponse.json(
         { message: "All fields are required" },
         { status: 400 }

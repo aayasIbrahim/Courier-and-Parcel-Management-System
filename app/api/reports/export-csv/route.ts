@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/authOption";
 import dbConnect from "@/lib/db";
-import Parcel from "@/models/Percel";
+import Parcel from "@/models/Parcel";
 
 export async function GET() {
   const session = await getServerSession(authOptions);
@@ -35,10 +35,9 @@ export async function GET() {
     p.agent?.name || "",
   ]);
 
-  const csv =
-    [headers, ...rows]
-      .map((row) => row.map(String).join(","))
-      .join("\n");
+  const csv = [headers, ...rows]
+    .map((row) => row.map(String).join(","))
+    .join("\n");
 
   return new NextResponse(csv, {
     headers: {

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import Parcel from "@/models/Percel";
+import Parcel from "@/models/Parcel";
 import connectDB from "@/lib/db";
 
 // -------------------- GET — Single Parcel --------------------
@@ -22,7 +22,7 @@ export async function GET(
     }
 
     return NextResponse.json(parcel, { status: 200 });
-  } catch  {
+  } catch {
     return NextResponse.json(
       { message: "Internal Server Error" },
       { status: 500 }
@@ -42,11 +42,10 @@ export async function PATCH(
   try {
     const body = await req.json();
 
-    const updatedParcel = await Parcel.findByIdAndUpdate(
-      id,
-      body,
-      { new: true, runValidators: true }
-    );
+    const updatedParcel = await Parcel.findByIdAndUpdate(id, body, {
+      new: true,
+      runValidators: true,
+    });
 
     if (!updatedParcel) {
       return NextResponse.json(
@@ -56,7 +55,7 @@ export async function PATCH(
     }
 
     return NextResponse.json(updatedParcel, { status: 200 });
-  } catch  {
+  } catch {
     return NextResponse.json(
       { message: "Failed to update parcel" },
       { status: 500 }

@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/authOption";
 import dbConnect from "@/lib/db";
-import Parcel from "@/models/Percel";
+import Parcel from "@/models/Parcel";
 
 export async function GET() {
   const session = await getServerSession(authOptions);
@@ -17,10 +17,10 @@ export async function GET() {
 
   const summary = {
     totalParcels: parcels.length,
-    booked: parcels.filter(p => p.status === "Booked").length,
-    inTransit: parcels.filter(p => p.status === "In Transit").length,
-    delivered: parcels.filter(p => p.status === "Delivered").length,
-    failed: parcels.filter(p => p.status === "Failed").length,
+    booked: parcels.filter((p) => p.status === "Booked").length,
+    inTransit: parcels.filter((p) => p.status === "In Transit").length,
+    delivered: parcels.filter((p) => p.status === "Delivered").length,
+    failed: parcels.filter((p) => p.status === "Failed").length,
   };
 
   return NextResponse.json(summary, { status: 200 });

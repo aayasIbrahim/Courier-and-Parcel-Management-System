@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@/lib/db";
-import Parcel from "@/models/Percel";
+import Parcel from "@/models/Parcel";
 
 export async function POST(req: NextRequest) {
   try {
@@ -9,7 +9,10 @@ export async function POST(req: NextRequest) {
     const { parcelId, status } = await req.json();
 
     if (!parcelId || !status) {
-      return NextResponse.json({ error: "Parcel ID and status are required" }, { status: 400 });
+      return NextResponse.json(
+        { error: "Parcel ID and status are required" },
+        { status: 400 }
+      );
     }
 
     // Update parcel using Mongoose
@@ -29,6 +32,9 @@ export async function POST(req: NextRequest) {
     });
   } catch {
     console.error("Error updating parcel status");
-    return NextResponse.json({ error: "Something went wrong" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Something went wrong" },
+      { status: 500 }
+    );
   }
 }

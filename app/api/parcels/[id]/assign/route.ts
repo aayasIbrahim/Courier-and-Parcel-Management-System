@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/authOption";
 import connectDB from "@/lib/db";
-import Parcel from "@/models/Percel";
+import Parcel from "@/models/Parcel";
 
 // -------------------- PATCH — Assign Agent --------------------
 export async function PATCH(
@@ -14,15 +14,12 @@ export async function PATCH(
 
     // 🔐 Only ADMIN can assign agent
     if (!session || session.user.role !== "admin") {
-      return NextResponse.json(
-        { message: "Unauthorized" },
-        { status: 403 }
-      );
+      return NextResponse.json({ message: "Unauthorized" }, { status: 403 });
     }
 
     await connectDB();
 
-    const { id } =await context.params;
+    const { id } = await context.params;
     const body = await req.json();
     const { agentId } = body;
 

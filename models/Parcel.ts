@@ -1,5 +1,9 @@
 import mongoose, { Schema, Document } from "mongoose";
-
+export interface ILocation {
+  lat: number;
+  lng: number;
+  timestamp?: Date;
+}
 export interface IParcel extends Document {
   pickupAddress: string;
   deliveryAddress: string;
@@ -8,10 +12,17 @@ export interface IParcel extends Document {
   paymentType: "COD" | "Prepaid";
   status: "Booked" | "Picked Up" | "In Transit" | "Delivered" | "Failed";
   customer?: string; // userId
-  agent?: string;   // assigned agentId
+  agent?: string;
+  currentLocation?: ILocation;
+  locationHistory: ILocation[]; 
   createdAt: Date;
   updatedAt: Date;
 }
+const LocationSchema = new Schema({
+  lat: Number,
+  lng: Number,
+  timestamp: { type: Date, default: Date.now },
+});
 
 const parcelSchema = new Schema<IParcel>(
   {
@@ -27,8 +38,11 @@ const parcelSchema = new Schema<IParcel>(
     },
     customer: { type: Schema.Types.ObjectId, ref: "User", required: true },
     agent: { type: Schema.Types.ObjectId, ref: "User" },
+    currentLocation: LocationSchema,
+    locationHistory: [LocationSchema],
   },
   { timestamps: true }
 );
 
-export default mongoose.models.Parcel || mongoose.model<IParcel>("Parcel", parcelSchema);
+export default mongoose.models.Parcel ||
+  mongoose.model<IParcel>("Parcel", parcelSchema);
