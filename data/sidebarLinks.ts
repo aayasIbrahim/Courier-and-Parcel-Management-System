@@ -3,7 +3,6 @@ import {
   LogOut,
   CheckCircle,
   Map,
-  User,
   LayoutDashboard,
   Users,
   FileText,
@@ -25,7 +24,14 @@ export const agentLinks = [
     ],
   },
   { name: "Route Optimization", href: "/dashboard/agent/route", icon: Map },
-  { name: "Profile", href: "/dashboard/agent/profile", icon: User },
+  {
+    name: "Settings",
+    icon: Settings,
+    children: [
+      { name: "Profile", href: "/dashboard/agent/profile" },
+      { name: "Change Password", href: "/dashboard/agent/change-password" },
+    ],
+  },
   { name: "Logout", href: "#", icon: LogOut, isLogout: true },
 ];
 
@@ -56,10 +62,8 @@ export const adminLinks = [
     name: "Settings",
     icon: Settings,
     children: [
-      { name: "General", href: "/dashboard/admin/settings" },
-      { name: "Parcel", href: "/dashboard/admin/settings/parcel" },
-      { name: "Charge", href: "/dashboard/admin/settings/charge" },
-      { name: "Payment", href: "/dashboard/admin/settings/payment" },
+      { name: "Profile", href: "/dashboard/admin/profile" },
+      { name: "Change Password", href: "/dashboard/admin/change-password" },
     ],
   },
   { name: "Logout", href: "#", icon: LogOut, isLogout: true },
@@ -69,6 +73,13 @@ export const customerLinks = [
   { name: "My Parcels", href: "/dashboard/customer", icon: List },
   { name: "Book Parcel", href: "/dashboard/customer/book", icon: Package },
   { name: "Track Parcel", href: "/dashboard/customer/track", icon: Map },
-  { name: "Profile", href: "/dashboard/customer/profile", icon: User },
+  {
+    name: "Settings",
+    icon: Settings,
+    children: [
+      { name: "Profile", href: "/dashboard/customer/profile" },
+      { name: "Change Password", href: "/dashboard/customer/change-password" },
+    ],
+  },
   { name: "Logout", href: "#", icon: LogOut, isLogout: true },
 ];

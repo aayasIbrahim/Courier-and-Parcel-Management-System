@@ -48,7 +48,7 @@ export default function BookingForm({ onSuccess }: BookingFormProps) {
       if (!res.ok) throw new Error("Failed to book parcel");
 
       const data = await res.json();
-      setMessage(`📦 Parcel booked successfully!\nID: ${data._id}\nType: ${data.type}`);
+      setMessage(`📦 Parcel booked successfully!\nID: ${data.id}\nType: ${data.type}`);
 
       // Call parent callback if provided
       onSuccess?.({ id: data._id, type: data.type });

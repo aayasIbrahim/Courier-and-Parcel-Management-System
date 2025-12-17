@@ -12,35 +12,32 @@ interface Parcel {
 export default function AgentRoutePage() {
   const [parcels, setParcels] = useState<Parcel[]>([]);
   const socketRef = useRef<Socket | null>(null);
-  const watchIdsRef = useRef<Record<string, number>>({}); // parcelId -> watchId
+  const watchIdsRef = useRef<Record<string, number>>({});
 
-  // Fetch assigned parcels
+  // Fetch parcels
   useEffect(() => {
     const fetchParcels = async () => {
       try {
         const res = await fetch("/api/parcels/assigned");
         const data = await res.json();
-        if (data.parcels && data.parcels.length > 0) {
-          setParcels(data.parcels);
-        }
+        if (data.parcels) setParcels(data.parcels);
       } catch (err) {
-        console.error("Error fetching assigned parcels:", err);
+        console.error(err);
       }
     };
     fetchParcels();
   }, []);
 
-  // Initialize Socket.IO
+  // Socket.IO connection
   useEffect(() => {
     socketRef.current = io(
       process.env.NEXT_PUBLIC_SOCKET_URL || "http://localhost:4000"
     );
 
-    socketRef.current.on("connect", () => {
-      console.log("Connected to Socket.IO server");
-    });
+    socketRef.current.on("connect", () =>
+      console.log("Connected to Socket.IO")
+    );
 
-    // Receive live parcel updates from server
     socketRef.current.on("parcelUpdate", (updatedParcel: Parcel) => {
       setParcels((prev) =>
         prev.map((p) =>
@@ -54,14 +51,15 @@ export default function AgentRoutePage() {
     };
   }, []);
 
-  // Start geolocation tracking for all parcels
+  // Geolocation tracking
   useEffect(() => {
     parcels.forEach((parcel) => {
-      if (parcel.status !== "Delivered" && !watchIdsRef.current[parcel._id]) {
+      if (!watchIdsRef.current[parcel._id] && parcel.status !== "Delivered") {
         socketRef.current?.emit("joinParcel", parcel._id);
 
         const watchId = navigator.geolocation.watchPosition(
           (pos) => {
+            console.log("Sending location:", pos.coords.latitude, pos.coords.longitude);
             socketRef.current?.emit("updateParcel", {
               _id: parcel._id,
               status: parcel.status === "Pending" ? "Picked Up" : parcel.status,
@@ -71,16 +69,14 @@ export default function AgentRoutePage() {
               },
             });
           },
-          console.error,
+          (err) => console.error("Geo error:", err),
           { enableHighAccuracy: true, maximumAge: 5000 }
         );
 
         watchIdsRef.current[parcel._id] = watchId;
       }
-    });
 
-    // Stop tracking delivered parcels
-    parcels.forEach((parcel) => {
+      // Stop tracking delivered
       if (parcel.status === "Delivered" && watchIdsRef.current[parcel._id]) {
         navigator.geolocation.clearWatch(watchIdsRef.current[parcel._id]);
         delete watchIdsRef.current[parcel._id];
@@ -97,7 +93,9 @@ export default function AgentRoutePage() {
 
   return (
     <div className="p-6 bg-white rounded shadow space-y-6">
-      <h2 className="text-xl font-bold flex items-center gap-2">🚴 Agent Live Tracking</h2>
+      <h2 className="text-xl font-bold flex items-center gap-2">
+        🚴 Agent Live Tracking
+      </h2>
 
       {parcels.length === 0 ? (
         <p className="text-gray-500">No assigned parcels</p>
@@ -113,12 +111,15 @@ export default function AgentRoutePage() {
               </p>
               <p>
                 <strong>Status:</strong>{" "}
-                <span className={getStatusColor(parcel.status)}>{parcel.status}</span>
+                <span className={getStatusColor(parcel.status)}>
+                  {parcel.status}
+                </span>
               </p>
               {parcel.currentLocation ? (
                 <p>
                   <strong>Live Location:</strong>{" "}
-                  {parcel.currentLocation.lat.toFixed(5)}, {parcel.currentLocation.lng.toFixed(5)}
+                  {parcel.currentLocation.lat.toFixed(5)},{" "}
+                  {parcel.currentLocation.lng.toFixed(5)}
                 </p>
               ) : (
                 <p className="text-gray-400">Live location not available yet</p>
