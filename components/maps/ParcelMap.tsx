@@ -64,7 +64,9 @@ const ParcelMap: React.FC = () => {
 
   // ---------------- Socket.io live updates ----------------
   useEffect(() => {
-  const socket: Socket = io(process.env.NEXT_PUBLIC_SOCKET_URL!); // replace with your server URL
+const socket: Socket = io("https://courier-and-parcel-management-syste-six.vercel.app", {
+  transports: ["websocket"], // optional but often needed on Vercel
+});
 
   socket.on("connect", () => console.log("Connected to socket server"));
 

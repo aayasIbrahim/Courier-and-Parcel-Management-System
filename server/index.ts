@@ -18,7 +18,7 @@ const server = http.createServer(app);
 // Socket.IO setup with CORS
 const io = new Server(server, {
   cors: {
-    origin: "https://courier-and-parcel-management-system-ktlv9higw.vercel.app/",
+    origin: "https://courier-and-parcel-management-syste-six.vercel.app",
     methods: ["GET", "POST"],
     credentials: true,
   },
