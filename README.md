@@ -76,7 +76,7 @@ For assignment evaluation, use the following demo accounts:
 
 ---
 
-## ⚙️ How to Run the Project Locally
+## ⚙️ Run Locally
 
 ### Clone the Repository
 ```bash
