@@ -1,104 +1,84 @@
-# Courier & Parcel Management System
+# 📦 Courier Parcel Management System  
+**Assignment Project**
 
-A full-stack courier & parcel management system built with Next.js, NextAuth, MongoDB, and Socket.IO.  
-It supports multiple user roles (admin, delivery agent, customer), parcel booking, real-time status tracking, and tracking history.
+A web-based Courier Parcel Management System developed using **Next.js**.  
+This system allows users to create, manage, and track courier parcels with different user roles such as **Admin**, **Agent**, and **Customer**.
 
-## 🧰 Tech Stack
+---
 
-- Frontend & Backend: Next.js (App Router) + TypeScript  
-- Database: MongoDB + Mongoose  
-- Authentication: NextAuth (Credentials + JWT)  
-- Real-time: Socket.IO  
-- State management / API: RTK Query (Redux Toolkit)  
-- Styling: Tailwind CSS (or your preferred UI library)  
+## 🎯 Project Objective
 
-## 📁 Folder Structure
+The main objective of this project is to:
+- Digitally manage courier parcel operations
+- Reduce manual tracking
+- Provide real-time parcel status updates
+- Implement role-based access control
 
-app/
-│
-├── dashboard/
-│   ├── admin/
-│   │   ├── layout.tsx               # Admin layout (uses reusable Layout component)
-│   │   ├── page.tsx                 # Admin dashboard home
-│   │   ├── parcels/
-│   │   │   ├── page.tsx             # All parcels
-│   │   │   ├── pending/page.tsx
-│   │   │   ├── delivered/page.tsx
-│   │   │   ├── failed/page.tsx
-│   │   │   └── [id]/page.tsx        # Parcel details
-│   │   ├── assign/page.tsx          # Assign agent page
-│   │   ├── users/
-│   │   │   ├── page.tsx             # All users
-│   │   │   ├── agents/page.tsx
-│   │   │   └── customers/page.tsx
-│   │   ├── reports/page.tsx
-│   │   └── settings/page.tsx
-│   │
-│   ├── agent/
-│   │   ├── layout.tsx
-│   │   ├── page.tsx                 # Assigned parcels
-│   │   ├── status/
-│   │   │   ├── picked/page.tsx
-│   │   │   ├── transit/page.tsx
-│   │   │   ├── delivered/page.tsx
-│   │   │   └── failed/page.tsx
-│   │   ├── route/page.tsx           # Route optimization map
-│   │   └── profile/page.tsx
-│   │
-│   └── customer/
-│       ├── layout.tsx
-│       ├── page.tsx                 # Home
-│       ├── book/page.tsx            # Parcel booking
-│       ├── history/page.tsx         # Booking history
-│       ├── track/
-│       │   └── [id]/page.tsx        # Parcel tracking map
-│       └── profile/page.tsx
-│
-├── api/
-│   ├── auth/                        # NextAuth routes
-│   ├── parcels/
-│   │   ├── route.ts
-│   │   └── [id]/route.ts
-│   └── users/
-│       ├── route.ts
-│       └── [id]/route.ts
-│
-├── components/
-│   ├── ui/
-│   │   ├── Layout.tsx                # Reusable layout (Navbar + Sidebar)
-│   │   ├── Navbar.tsx
-│   │   └── Sidebar.tsx
-│   │
-│   ├── admin/
-│   │   ├── MetricCard.tsx
-│   │   ├── ParcelTable.tsx
-│   │   └── UserTable.tsx
-│   │
-│   ├── agent/
-│   │   ├── ParcelTable.tsx
-│   │   └── ParcelMap.tsx
-│   │
-│   └── customer/
-│       ├── BookingForm.tsx
-│       ├── BookingTable.tsx
-│       └── ParcelMap.tsx
-│
-├── lib/
-│   ├── db.ts                         # MongoDB connection
-│   ├── utils.ts                      # Utility functions like 'cn'
-│   └── api/                          # RTK Query API slices
-│       ├── parcels.ts
-│       └── users.ts
-│
-├── models/
-│   ├── User.ts
-│   ├── Parcel.ts
-│   └── Tracking.ts
-│
-├── styles/
-│   └── globals.css
-│
-├── env.d.ts
-├── next-env.d.ts
-└── next.config.js
+---
 
+## 🌐 Live Project Link
+
+- **Live Website:** https://your-live-link.vercel.app  
+- **GitHub Repository:** https://github.com/your-github-username/courier-parcel-system
+
+---
+
+## 👥 User Roles & Responsibilities
+
+### 👑 Admin
+- View all registered users
+- View all parcels
+- Update parcel delivery status
+- Control overall system operations
+
+### 🚚 Agent
+- View assigned parcels
+- Update parcel status:
+  - Picked Up
+  - In Transit
+  - Delivered
+
+### 📦 Customer
+- Create parcel delivery requests
+- Track parcel status in real-time
+- View parcel history
+
+---
+
+## 🔐 Demo Login Credentials
+
+For assignment evaluation, use the following demo accounts:
+
+| Role     | Email              | Password   |
+|---------|--------------------|------------|
+| Admin   | admin@gmail.com    | admin123   |
+| Agent   | agent@gmail.com    | agent123   |
+| Customer| customer@gmail.com | customer123|
+
+---
+
+## 🧑‍💻 Technology Used
+
+### Frontend
+- Next.js
+- React
+- TypeScript
+- Tailwind CSS
+- Leaflet (Map integration)
+- Socket.IO (Real-time updates)
+
+### Backend
+- Node.js
+- Express.js
+- MongoDB
+- Mongoose
+- JWT / NextAuth Authentication
+
+---
+
+## ⚙️ How to Run the Project Locally
+
+### Step 1: Clone the Repository
+```bash
+git clone https://github.com/your-github-username/courier-parcel-system.git
+cd courier-parcel-system
