@@ -25,7 +25,7 @@ export default function InTransitPage() {
       try {
         const res = await fetch("/api/parcels?status=In Transit");
         const data = await res.json();
-        setParcels(data || []);
+         setParcels(Array.isArray(data.data) ? data.data : data.parcels || []);
       } catch (err) {
         console.error(err);
         setMessage("❌ Failed to fetch parcels.");

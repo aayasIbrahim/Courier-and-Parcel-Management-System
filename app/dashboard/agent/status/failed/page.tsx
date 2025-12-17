@@ -22,7 +22,7 @@ export default function FailedPage() {
       try {
         const res = await fetch("/api/parcels?status=Failed");
         const data = await res.json();
-        setParcels(data || []);
+          setParcels(Array.isArray(data.data) ? data.data : data.parcels || []);
       } catch (err) {
         console.error(err);
         setMessage("❌ Failed to load parcels.");
@@ -71,10 +71,12 @@ export default function FailedPage() {
       )}
 
       {message && (
-        <div className="p-3 rounded bg-red-100 text-red-800 whitespace-pre-line">{message}</div>
+    
+    <div className="p-3 rounded bg-red-100 text-red-800 whitespace-pre-line">{message}</div>
       )}
+       <ParcelTable assignedOnly={true} />
     </div>
-    <ParcelTable assignedOnly={true} />
+   
     </>
   );
 }

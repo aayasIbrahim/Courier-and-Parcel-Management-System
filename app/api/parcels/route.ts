@@ -29,14 +29,15 @@ export async function GET(req: Request) {
     await dbConnect();
 
     const { searchParams } = new URL(req.url);
-    const statusParam = searchParams.get("status");
 
-    // Type guard: only assign if valid
+    // Get filters
+    const statusParam = searchParams.get("status");
+    const pageParam = searchParams.get("page");
+    const limitParam = searchParams.get("limit");
+
+    // Type guard for status
     let status: IParcel["status"] | undefined;
-    if (
-      statusParam &&
-      validStatuses.includes(statusParam as IParcel["status"])
-    ) {
+    if (statusParam && validStatuses.includes(statusParam as IParcel["status"])) {
       status = statusParam as IParcel["status"];
     }
 
@@ -49,17 +50,36 @@ export async function GET(req: Request) {
       filter.agent = session.user.id;
     }
 
-    // Status filter
-    if (status) {
-      filter.status = status;
-    }
+    if (status) filter.status = status;
+
+    // Pagination logic
+    const page = Math.max(1, parseInt(pageParam || "1"));
+    const limit = Math.max(1, parseInt(limitParam || "10"));
+    const skip = (page - 1) * limit;
+
+    // Fetch total count for pagination info
+    const total = await Parcel.countDocuments(filter);
 
     const parcels = await Parcel.find(filter)
       .populate("customer", "name email")
       .populate("agent", "name email")
-      .sort({ createdAt: -1 });
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit);
 
-    return NextResponse.json(parcels, { status: 200 });
+    // Return with pagination info
+    return NextResponse.json(
+      {
+        data: parcels,
+        pagination: {
+          total,
+          page,
+          limit,
+          totalPages: Math.ceil(total / limit),
+        },
+      },
+      { status: 200 }
+    );
   } catch (error) {
     console.error("GET PARCELS ERROR:", error);
     return NextResponse.json(
@@ -68,6 +88,7 @@ export async function GET(req: Request) {
     );
   }
 }
+
 
 // -------------------- CREATE PARCEL (CUSTOMER ONLY) --------------------
 export async function POST(request: NextRequest) {

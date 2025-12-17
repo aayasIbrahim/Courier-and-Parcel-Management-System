@@ -22,7 +22,7 @@ export default function DeliveredPage() {
       try {
         const res = await fetch("/api/parcels?status=Delivered");
         const data = await res.json();
-        setParcels(data || []);
+         setParcels(Array.isArray(data.data) ? data.data : data.parcels || []);
       } catch (err) {
         console.error(err);
         setMessage("❌ Failed to load delivered parcels.");
@@ -73,8 +73,10 @@ export default function DeliveredPage() {
       {message && (
         <div className="p-3 rounded bg-red-100 text-red-800 whitespace-pre-line">{message}</div>
       )}
+   <h1 className="text-center text-bold">Parcel Status</h1>
+      <ParcelTable assignedOnly={true} />
     </div>
-    <ParcelTable assignedOnly={true} />
+    
     </>
   );
 }

@@ -36,11 +36,11 @@ export default function Navbar({
         {/* Right */}
         <div className="flex items-center gap-4">
           {/* Notification */}
-          <button className="relative p-2 rounded-lg hover:bg-gray-100 transition">
+          {/* <button className="relative p-2 rounded-lg hover:bg-gray-100 transition">
             <Bell className="h-5 w-5 text-gray-700" />
             {/* Badge */}
-            <span className="absolute top-1 right-1 h-2 w-2 rounded-full bg-red-500" />
-          </button>
+            {/* <span className="absolute top-1 right-1 h-2 w-2 rounded-full bg-red-500" /> */}
+          {/* </button>  */}
 
           {/* User */}
           <div className="flex items-center gap-2 cursor-pointer rounded-lg px-2 py-1 hover:bg-gray-100 transition">

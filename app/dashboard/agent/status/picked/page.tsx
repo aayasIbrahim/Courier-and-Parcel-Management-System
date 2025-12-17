@@ -16,22 +16,28 @@ export default function PickedUpPage() {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
 
   const dropdownRef = useRef<HTMLDivElement>(null);
 
+  // Fetch parcels with status "Picked Up"
+  const fetchParcels = async () => {
+    setError("");
+    try {
+      const res = await fetch("/api/parcels?status=Picked Up");
+      const data = await res.json();
+      setParcels(Array.isArray(data.data) ? data.data : data.parcels || []);
+    } catch (err) {
+      console.error(err);
+      setError("Failed to load parcels");
+    }
+  };
+
   useEffect(() => {
-    const fetchParcels = async () => {
-      try {
-        const res = await fetch("/api/parcels?status=Picked Up");
-        const data = await res.json();
-        setParcels(data || []);
-      } catch (err) {
-        console.error(err);
-      }
-    };
     fetchParcels();
   }, []);
 
+  // Close dropdown if clicked outside
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
@@ -42,10 +48,12 @@ export default function PickedUpPage() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  // Update parcel status
   const handleUpdate = async () => {
-    if (!selectedParcel) return alert("Select a parcel");
+    if (!selectedParcel) return;
     setLoading(true);
     setMessage("");
+    setError("");
 
     try {
       const res = await fetch("/api/parcels/updateStatus", {
@@ -53,29 +61,32 @@ export default function PickedUpPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ parcelId: selectedParcel._id, status: "In Transit" }),
       });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Failed");
 
-      setMessage(`✅ Parcel ${data.parcel._id} status updated to "In Transit"`);
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Failed to update status");
+
+      setMessage(`✅ Parcel ${selectedParcel._id} status updated to "In Transit"`);
       setSelectedParcel(null);
 
+      // Update local state
       setParcels((prev) =>
         prev.map((p) =>
           p._id === selectedParcel._id ? { ...p, status: "In Transit" } : p
         )
       );
-    } catch {
-      setMessage(`❌ Failed to update parcel status`);
+    } catch  {
+    
+      setError(`❌  "Failed to update parcel status"}`);
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="max-w-3xl mx-auto p-6 bg-white rounded shadow-md space-y-6">
-      <h2 className="text-2xl font-bold">Update Status: In Transit</h2>
+    <div className="max-w-4xl mx-auto p-6 space-y-6">
+      <h2 className="text-2xl font-bold">Update Parcel Status: Picked Up → In Transit</h2>
 
-      {/* Custom Dropdown */}
+      {/* Dropdown */}
       <div className="relative" ref={dropdownRef}>
         <button
           onClick={() => setDropdownOpen((prev) => !prev)}
@@ -89,6 +100,9 @@ export default function PickedUpPage() {
 
         {dropdownOpen && (
           <ul className="absolute z-10 mt-1 w-full bg-white border rounded shadow-md max-h-60 overflow-auto transition-all duration-200">
+            {parcels.length === 0 && (
+              <li className="px-3 py-2 text-gray-500">No parcels available</li>
+            )}
             {parcels.map((parcel) => {
               const isSelected = selectedParcel?._id === parcel._id;
               return (
@@ -113,6 +127,7 @@ export default function PickedUpPage() {
         )}
       </div>
 
+      {/* Update Button */}
       <button
         onClick={handleUpdate}
         disabled={loading || !selectedParcel}
@@ -121,10 +136,15 @@ export default function PickedUpPage() {
         {loading ? "Updating..." : "Update Status"}
       </button>
 
+      {/* Messages */}
       {message && (
         <div className="p-3 rounded bg-green-100 text-green-800 whitespace-pre-line">{message}</div>
       )}
+      {error && (
+        <div className="p-3 rounded bg-red-100 text-red-800 whitespace-pre-line">{error}</div>
+      )}
 
+      {/* Parcel Table with Pagination */}
       <ParcelTable assignedOnly />
     </div>
   );
