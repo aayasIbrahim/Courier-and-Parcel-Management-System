@@ -8,7 +8,7 @@ import "leaflet/dist/leaflet.css";
 
 // ---------------- Custom Marker ----------------
 const parcelIcon = new Icon({
-  iconUrl: "/parcel-icon.svg", // replace with your own icon
+  iconUrl: "/percel-icon.png", 
   iconSize: [30, 30],
   iconAnchor: [15, 30],
   popupAnchor: [0, -30],
