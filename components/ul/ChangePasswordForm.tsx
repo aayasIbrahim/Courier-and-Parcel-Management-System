@@ -55,7 +55,7 @@ export default function ChangePasswordForm() {
   };
 
   return (
-    <section className="flex justify-center  min-h-screen p-4">
+    <section className="flex justify-center items-center min-h-screen p-4">
       <div className="bg-white rounded-2xl shadow p-6 max-w-md w-full">
         {/* Header */}
         <div className="flex items-center gap-2 mb-4">

@@ -11,7 +11,7 @@ export default function Home() {
           </h1>
         </header>
       </div>
-      <div className=" flex items-center justify-center bg-white px-4">
+      <div className=" flex justify-center min-h-screen bg-white px-4">
         <LoginForm />
 
       </div>
