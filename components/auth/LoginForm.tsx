@@ -46,7 +46,7 @@ export default function LoginForm() {
     <div >
       <form
         onSubmit={handleLogin}
-        className="w-full max-w-md rounded-2xl bg-white p-6 sm:p-8 shadow-lg transition"
+        className="w-full max-w-md rounded-2xl bg-white p-6 sm:p-8 shadow-lg transition text-black"
       >
         {/* Header */}
         <div className="mb-6 text-center">

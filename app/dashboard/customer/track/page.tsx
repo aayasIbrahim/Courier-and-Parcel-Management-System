@@ -20,6 +20,7 @@ export default function TrackParcelPage() {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const socketRef = useRef<Socket | null>(null);
+  const mapRef = useRef<google.maps.Map | null>(null);
 
   // Load Google Maps
   const { isLoaded } = useJsApiLoader({
@@ -33,7 +34,6 @@ export default function TrackParcelPage() {
         const res = await fetch("/api/parcels");
         const data = await res.json();
         const list = Array.isArray(data.data) ? data.data : [];
-        console.log("Fetched parcels:", list);
         setParcels(list);
         if (list.length > 0) setSelectedParcel(list[0]);
       } catch (err) {
@@ -43,20 +43,38 @@ export default function TrackParcelPage() {
     fetchParcels();
   }, []);
 
-  // Connect to Socket.IO for live updates
+  // Connect to Socket.IO for live updates (hard-coded URL)
   useEffect(() => {
-    const socketUrl = process.env.NEXT_PUBLIC_SOCKET_URL || "http://localhost:4000";
+    const socketUrl =
+      "https://courier-and-parcel-management-syste-six.vercel.app"; // hard-coded
     socketRef.current = io(socketUrl, { transports: ["websocket"] });
 
-    socketRef.current.on("connect", () => console.log("Connected to socket server"));
+    socketRef.current.on("connect", () =>
+      console.log("Connected to socket server")
+    );
 
     // Update parcel location/status in real-time
     socketRef.current.on("parcelUpdate", (update: Parcel) => {
       setParcels((prev) =>
-        prev.map((p) => (p._id === update._id ? { ...p, ...update } : p))
+        prev.map((p) =>
+          p._id === update._id
+            ? {
+                ...p,
+                ...update,
+                currentLocation: update.currentLocation ?? p.currentLocation,
+              }
+            : p
+        )
       );
+
       setSelectedParcel((prev) =>
-        prev && prev._id === update._id ? { ...prev, ...update } : prev
+        prev && prev._id === update._id
+          ? {
+              ...prev,
+              ...update,
+              currentLocation: update.currentLocation ?? prev.currentLocation,
+            }
+          : prev
       );
     });
 
@@ -68,7 +86,10 @@ export default function TrackParcelPage() {
   // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(e.target as Node)
+      ) {
         setDropdownOpen(false);
       }
     };
@@ -77,7 +98,17 @@ export default function TrackParcelPage() {
   }, []);
 
   // Map center
-  const center = selectedParcel?.currentLocation || { lat: 23.8103, lng: 90.4125 };
+  const center = selectedParcel?.currentLocation || {
+    lat: 23.8103,
+    lng: 90.4125,
+  };
+
+  // Auto-pan map on location update
+  useEffect(() => {
+    if (selectedParcel?.currentLocation && mapRef.current) {
+      mapRef.current.panTo(selectedParcel.currentLocation);
+    }
+  }, [selectedParcel?.currentLocation]);
 
   return (
     <div className="max-w-5xl mx-auto p-6 space-y-6">
@@ -128,6 +159,9 @@ export default function TrackParcelPage() {
             zoom={15}
             center={center}
             mapContainerStyle={{ width: "100%", height: "100%" }}
+            onLoad={(map) => {
+              mapRef.current = map;
+            }}
           >
             {selectedParcel.currentLocation && (
               <Marker position={selectedParcel.currentLocation} />
