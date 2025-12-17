@@ -28,8 +28,8 @@ export default function FailedParcelsPage() {
 
         if (!res.ok) throw new Error("Failed to fetch failed parcels");
 
-        const data = await res.json();
-        setParcels(Array.isArray(data) ? data : data.parcels || []);
+        const parcelData = await res.json();
+        setParcels(parcelData.data || []);
       } catch {
         setError("Unable to load failed parcels");
       } finally {

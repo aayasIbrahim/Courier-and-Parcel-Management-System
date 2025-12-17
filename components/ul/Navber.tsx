@@ -1,6 +1,6 @@
 "use client";
 
-import { Menu, Bell, UserCircle } from "lucide-react";
+import { Menu,  UserCircle } from "lucide-react";
 
 interface NavbarProps {
   title: string;

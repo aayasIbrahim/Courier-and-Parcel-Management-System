@@ -31,7 +31,7 @@ export default function AgentRoutePage() {
   // Socket.IO connection
   useEffect(() => {
     socketRef.current = io(
-      process.env.NEXT_PUBLIC_SOCKET_URL || "http://localhost:4000"
+      (process.env.NEXT_PUBLIC_SOCKET_URL!) || "http://localhost:4000"
     );
 
     socketRef.current.on("connect", () =>

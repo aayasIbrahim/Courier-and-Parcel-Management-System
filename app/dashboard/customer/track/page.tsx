@@ -19,43 +19,42 @@ export default function TrackParcelPage() {
   const [selectedParcel, setSelectedParcel] = useState<Parcel | null>(null);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
-
   const socketRef = useRef<Socket | null>(null);
 
-  // Google Maps loader
+  // Load Google Maps
   const { isLoaded } = useJsApiLoader({
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!,
   });
 
-  // Fetch customer parcels
+  // Fetch parcels from API
   useEffect(() => {
-    fetch("/api/parcels")
-      .then((res) => res.json())
-      .then((data) => {
-        const list = Array.isArray(data) ? data : data.parcels || [];
+    const fetchParcels = async () => {
+      try {
+        const res = await fetch("/api/parcels");
+        const data = await res.json();
+        const list = Array.isArray(data.data) ? data.data : [];
+        console.log("Fetched parcels:", list);
         setParcels(list);
-
-        // Auto-select first parcel
         if (list.length > 0) setSelectedParcel(list[0]);
-      })
-      .catch(console.error);
+      } catch (err) {
+        console.error("Error fetching parcels:", err);
+      }
+    };
+    fetchParcels();
   }, []);
 
-  // Socket connection for live updates
+  // Connect to Socket.IO for live updates
   useEffect(() => {
-    const socketUrl =
-      process.env.NEXT_PUBLIC_SOCKET_URL || "http://localhost:4000";
-
+    const socketUrl = process.env.NEXT_PUBLIC_SOCKET_URL || "http://localhost:4000";
     socketRef.current = io(socketUrl, { transports: ["websocket"] });
 
     socketRef.current.on("connect", () => console.log("Connected to socket server"));
 
-    // Listen for parcel updates
+    // Update parcel location/status in real-time
     socketRef.current.on("parcelUpdate", (update: Parcel) => {
       setParcels((prev) =>
         prev.map((p) => (p._id === update._id ? { ...p, ...update } : p))
       );
-
       setSelectedParcel((prev) =>
         prev && prev._id === update._id ? { ...prev, ...update } : prev
       );
@@ -66,7 +65,7 @@ export default function TrackParcelPage() {
     };
   }, []);
 
-  // Close dropdown on outside click
+  // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
@@ -77,28 +76,29 @@ export default function TrackParcelPage() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  // Map center
   const center = selectedParcel?.currentLocation || { lat: 23.8103, lng: 90.4125 };
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6 p-4">
-      <h2 className="text-xl font-semibold flex items-center gap-2">
-        <Map className="h-5 w-5" /> Track Parcel
+    <div className="max-w-5xl mx-auto p-6 space-y-6">
+      <h2 className="text-2xl md:text-3xl font-bold flex items-center gap-2">
+        <Map className="h-6 w-6" /> Track Parcel
       </h2>
 
-      {/* Dropdown */}
+      {/* Dropdown for parcels */}
       <div className="relative w-full max-w-md" ref={dropdownRef}>
         <button
           onClick={() => setDropdownOpen(!dropdownOpen)}
-          className="w-full bg-white border rounded px-4 py-2 flex justify-between items-center"
+          className="w-full bg-white border rounded px-4 py-2 flex justify-between items-center shadow-sm hover:shadow-md transition"
         >
           {selectedParcel
             ? `📦 ${selectedParcel._id} | ${selectedParcel.status}`
             : "— Select Parcel —"}
-          <span>▼</span>
+          <span className="ml-2">▼</span>
         </button>
 
         {dropdownOpen && (
-          <ul className="absolute z-50 w-full bg-white border rounded shadow max-h-72 overflow-y-auto">
+          <ul className="absolute z-50 w-full bg-white border rounded shadow-lg max-h-72 overflow-y-auto mt-1">
             {parcels.map((p) => (
               <li
                 key={p._id}
@@ -106,7 +106,7 @@ export default function TrackParcelPage() {
                   setSelectedParcel(p);
                   setDropdownOpen(false);
                 }}
-                className="px-4 py-2 hover:bg-blue-100 cursor-pointer text-sm"
+                className="px-4 py-2 hover:bg-blue-100 cursor-pointer text-sm transition"
               >
                 <div className="font-semibold">
                   {p.type === "Fragile" ? "🧨" : "📦"} {p._id}
@@ -114,7 +114,7 @@ export default function TrackParcelPage() {
                 <div className="text-gray-600 truncate">
                   {p.pickupAddress} → {p.deliveryAddress}
                 </div>
-                <div>Status: {p.status}</div>
+                <div className="text-gray-500 text-xs">Status: {p.status}</div>
               </li>
             ))}
           </ul>
@@ -123,7 +123,7 @@ export default function TrackParcelPage() {
 
       {/* Map */}
       {isLoaded && selectedParcel ? (
-        <div className="h-96 border rounded overflow-hidden mt-4">
+        <div className="h-96 w-full border rounded overflow-hidden shadow-sm">
           <GoogleMap
             zoom={15}
             center={center}

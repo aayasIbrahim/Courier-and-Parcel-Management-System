@@ -26,10 +26,9 @@ export default function AdminAllParcelsPage() {
         });
 
         if (!res.ok) throw new Error("Failed to fetch parcels");
-
-        const data = await res.json();
-        setParcels(Array.isArray(data) ? data : data.parcels || []);
-      } catch  {
+        const parcelData = await res.json();
+        setParcels(parcelData.data || []);
+      } catch {
         setError("Unable to load parcels");
       } finally {
         setLoading(false);
@@ -57,9 +56,7 @@ export default function AdminAllParcelsPage() {
 
       {/* Error */}
       {error && (
-        <div className="bg-red-100 text-red-600 p-3 rounded">
-          {error}
-        </div>
+        <div className="bg-red-100 text-red-600 p-3 rounded">{error}</div>
       )}
 
       {/* Desktop Table */}
@@ -84,10 +81,19 @@ export default function AdminAllParcelsPage() {
                   <td className="p-3">
                     <span
                       className={`px-2 py-1 rounded text-xs font-medium
-                        ${p.status === "Delivered" && "bg-green-100 text-green-700"}
-                        ${p.status === "Pending" && "bg-yellow-100 text-yellow-700"}
+                        ${
+                          p.status === "Delivered" &&
+                          "bg-green-100 text-green-700"
+                        }
+                        ${
+                          p.status === "Pending" &&
+                          "bg-yellow-100 text-yellow-700"
+                        }
                         ${p.status === "Failed" && "bg-red-100 text-red-700"}
-                        ${p.status === "In Transit" && "bg-blue-100 text-blue-700"}
+                        ${
+                          p.status === "In Transit" &&
+                          "bg-blue-100 text-blue-700"
+                        }
                       `}
                     >
                       {p.status}
@@ -111,10 +117,7 @@ export default function AdminAllParcelsPage() {
       {!loading && parcels.length > 0 && (
         <div className="md:hidden space-y-4">
           {parcels.map((p) => (
-            <div
-              key={p._id}
-              className="bg-white rounded shadow p-4 space-y-2"
-            >
+            <div key={p._id} className="bg-white rounded shadow p-4 space-y-2">
               <div className="flex justify-between items-center">
                 <span className="font-mono text-xs">{p._id}</span>
                 <span className="text-xs font-medium">{p.status}</span>

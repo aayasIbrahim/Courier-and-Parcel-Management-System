@@ -7,7 +7,7 @@ import Parcel from "@/models/Parcel";
 // -------------------- PATCH — Assign Agent --------------------
 export async function PATCH(
   req: NextRequest,
-  context: { params: { id: string } }
+  context: { params: Promise<{ id: string }> } // 👈 note the Promise
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -19,7 +19,7 @@ export async function PATCH(
 
     await connectDB();
 
-    const { id } = await context.params;
+    const { id } = await context.params; // 👈 now we await the Promise
     const body = await req.json();
     const { agentId } = body;
 

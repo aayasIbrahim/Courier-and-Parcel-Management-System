@@ -31,6 +31,7 @@
     "@tailwindcss/postcss": "^4",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
+    "@types/leaflet": "^1.9.21",
     "@types/node": "^20.19.26",
     "@types/pdfkit": "^0.17.4",
     "@types/react": "^19",

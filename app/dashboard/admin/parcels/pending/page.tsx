@@ -27,9 +27,9 @@ export default function PendingParcelsPage() {
 
         if (!res.ok) throw new Error("Failed to fetch pending parcels");
 
-        const data = await res.json();
-        setParcels(Array.isArray(data) ? data : data.parcels || []);
-      } catch  {
+        const parcelData = await res.json();
+        setParcels(parcelData.data || []);
+      } catch {
         setError("Unable to load pending parcels");
       } finally {
         setLoading(false);
@@ -57,9 +57,7 @@ export default function PendingParcelsPage() {
 
       {/* Error */}
       {error && (
-        <div className="bg-red-100 text-red-600 p-3 rounded">
-          {error}
-        </div>
+        <div className="bg-red-100 text-red-600 p-3 rounded">{error}</div>
       )}
 
       {/* Desktop Table */}
@@ -98,10 +96,7 @@ export default function PendingParcelsPage() {
       {!loading && parcels.length > 0 && (
         <div className="md:hidden space-y-4">
           {parcels.map((p) => (
-            <div
-              key={p._id}
-              className="bg-white rounded shadow p-4 space-y-2"
-            >
+            <div key={p._id} className="bg-white rounded shadow p-4 space-y-2">
               <div className="flex justify-between items-center">
                 <span className="font-mono text-xs">{p._id}</span>
                 <span className="text-xs font-medium text-yellow-600">

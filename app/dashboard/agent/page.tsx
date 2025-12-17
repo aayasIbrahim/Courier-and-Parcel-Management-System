@@ -1,8 +1,14 @@
-
+'use client';
 
 import React from "react";
 import ParcelTable from "@/components/tables/ParcelTable";
-import ParcelMap from "@/components/maps/ParcelMap";
+import dynamic from "next/dynamic";
+
+// Dynamically import ParcelMap to prevent SSR issues
+const ParcelMap = dynamic(() => import("@/components/maps/ParcelMap"), {
+  ssr: false,
+  loading: () => <p>Loading map...</p>, // optional fallback
+});
 
 const AgentDashboard = () => {
   return (
