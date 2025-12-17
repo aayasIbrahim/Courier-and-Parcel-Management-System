@@ -4,7 +4,7 @@ import { useState } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { verifyRole } from "@/utils/verifyRole";
-import { Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff, Loader2 } from "lucide-react";
 
 export default function LoginForm() {
   const router = useRouter();
@@ -13,16 +13,12 @@ export default function LoginForm() {
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
-  const handleLogin = async (
-    e: React.FormEvent<HTMLFormElement>
-  ) => {
+  const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError("");
     setLoading(true);
 
-    // ✅ Safe & professional way
     const formData = new FormData(e.currentTarget);
-
     const email = (formData.get("email") as string)?.toLowerCase();
     const password = formData.get("password") as string;
 
@@ -38,7 +34,6 @@ export default function LoginForm() {
       return;
     }
 
-    // Check role
     const sessionRes = await fetch("/api/auth/session");
     const session = await sessionRes.json();
     const role = session?.user?.role;
@@ -48,31 +43,31 @@ export default function LoginForm() {
   };
 
   return (
-    <div className=" hover:shadow-lg hover:rounded-2xl flex justify-center">
+    <div >
       <form
         onSubmit={handleLogin}
-        className="w-full max-w-md rounded-2xl bg-white p-8 shadow-lg"
+        className="w-full max-w-md rounded-2xl bg-white p-6 sm:p-8 shadow-lg transition"
       >
         {/* Header */}
         <div className="mb-6 text-center">
-          <h2 className="text-2xl font-bold text-gray-800">
-            Welcome Back
+          <h2 className="text-2xl sm:text-3xl font-bold text-gray-800">
+            Welcome 
           </h2>
-          <p className="text-sm text-gray-500 mt-1">
-            Sign in to your account
+          <p className="mt-1 text-sm text-gray-500">
+            Sign in to continue
           </p>
         </div>
 
         {/* Error */}
         {error && (
-          <div className="mb-4 rounded-lg bg-red-50 px-4 py-2 text-sm text-red-600">
+          <div className="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-2 text-sm text-red-600">
             {error}
           </div>
         )}
 
         {/* Email */}
         <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="mb-1 block text-sm font-medium text-gray-700">
             Email address
           </label>
           <input
@@ -80,13 +75,13 @@ export default function LoginForm() {
             name="email"
             required
             placeholder="you@example.com"
-            className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+            className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
           />
         </div>
 
-        {/* Password with show/hide */}
+        {/* Password */}
         <div className="mb-5">
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="mb-1 block text-sm font-medium text-gray-700">
             Password
           </label>
 
@@ -96,13 +91,14 @@ export default function LoginForm() {
               name="password"
               required
               placeholder="••••••••"
-              className="w-full rounded-lg border border-gray-300 px-3 py-2 pr-10 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+              className="w-full rounded-lg border border-gray-300 px-3 py-2.5 pr-10 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
             />
 
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
               className="absolute inset-y-0 right-3 flex items-center text-gray-500 hover:text-gray-700"
+              aria-label="Toggle password visibility"
             >
               {showPassword ? (
                 <EyeOff className="h-4 w-4" />
@@ -113,12 +109,13 @@ export default function LoginForm() {
           </div>
         </div>
 
-        {/* Button */}
+        {/* Submit */}
         <button
           type="submit"
           disabled={loading}
-          className="w-full rounded-lg bg-blue-600 py-2.5 text-sm font-medium text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-70"
+          className="flex w-full items-center justify-center gap-2 rounded-lg bg-blue-600 py-2.5 text-sm font-medium text-white transition hover:bg-blue-700 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-70"
         >
+          {loading && <Loader2 className="h-4 w-4 animate-spin" />}
           {loading ? "Signing in..." : "Sign In"}
         </button>
 

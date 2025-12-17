@@ -18,8 +18,8 @@ The main objective of this project is to:
 
 ## 🌐 Live Project Link
 
-- **Live Website:** https://your-live-link.vercel.app  
-- **GitHub Repository:** https://github.com/your-github-username/courier-parcel-system
+- **Live Website:** https://courier-and-parcel-management-syste-six.vercel.app/
+- **GitHub Repository:** https://github.com/aayasIbrahim/Courier-and-Parcel-Management-System
 
 ---
 
@@ -51,9 +51,9 @@ For assignment evaluation, use the following demo accounts:
 
 | Role     | Email              | Password   |
 |---------|--------------------|------------|
-| Admin   | admin@gmail.com    | admin123   |
-| Agent   | agent@gmail.com    | agent123   |
-| Customer| customer@gmail.com | customer123|
+| Admin   | admin@gmail.com    | 12345678   |
+| Agent   | agent@gmail.com    | 12345678   |
+| Customer| customer@gmail.com | 12345678   |
 
 ---
 
@@ -78,7 +78,7 @@ For assignment evaluation, use the following demo accounts:
 
 ## ⚙️ How to Run the Project Locally
 
-### Step 1: Clone the Repository
+### Clone the Repository
 ```bash
-git clone https://github.com/your-github-username/courier-parcel-system.git
-cd courier-parcel-system
+https://github.com/aayasIbrahim/Courier-and-Parcel-Management-System.git
+

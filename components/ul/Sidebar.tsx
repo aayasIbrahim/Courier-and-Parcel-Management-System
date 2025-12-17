@@ -37,7 +37,7 @@ export default function Sidebar({
       {/* Overlay */}
       {isOpen && (
         <div
-          className="fixed inset-0 bg-black/40 z-40 md:hidden"
+          className="fixed inset-0   md:hidden"
           onClick={closeSidebar}
         />
       )}
