@@ -20,7 +20,7 @@ export const agentLinks = [
       { name: "Picked Up", href: "/dashboard/agent/status/picked" },
       { name: "In Transit", href: "/dashboard/agent/status/transit" },
       { name: "Delivered", href: "/dashboard/agent/status/delivered" },
-      { name: "Failed", href: "/dashboard/agent/status/failed" },
+      { name:  "Failed", href: "/dashboard/agent/status/failed" },
     ],
   },
   { name: "Route Optimization", href: "/dashboard/agent/route", icon: Map },
