@@ -1,10 +1,8 @@
-import ChangePasswordForm from '@/components/ul/ChangePasswordForm'
-import React from 'react'
+import ChangePasswordForm from "@/components/auth/ChangePasswordForm";
+import React from "react";
 
 function page() {
-  return (
-    <ChangePasswordForm/>
-  )
+  return <ChangePasswordForm />;
 }
 
-export default page
+export default page;

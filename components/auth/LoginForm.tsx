@@ -43,7 +43,7 @@ export default function LoginForm() {
   };
 
   return (
-    <div >
+    <div>
       <form
         onSubmit={handleLogin}
         className="w-full max-w-md rounded-2xl bg-white p-6 sm:p-8 shadow-lg transition text-black"
@@ -51,11 +51,9 @@ export default function LoginForm() {
         {/* Header */}
         <div className="mb-6 text-center">
           <h2 className="text-2xl sm:text-3xl font-bold text-gray-800">
-            Welcome 
+            Welcome
           </h2>
-          <p className="mt-1 text-sm text-gray-500">
-            Sign in to continue
-          </p>
+          <p className="mt-1 text-sm text-gray-500">Sign in to continue</p>
         </div>
 
         {/* Error */}
@@ -91,6 +89,7 @@ export default function LoginForm() {
               name="password"
               required
               placeholder="••••••••"
+              autoComplete="new-password"
               className="w-full rounded-lg border border-gray-300 px-3 py-2.5 pr-10 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
             />
 
