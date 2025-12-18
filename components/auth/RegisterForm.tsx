@@ -12,40 +12,44 @@ export default function RegisterForm() {
   const [showPassword, setShowPassword] = useState(false);
 
   // ✅ Proper event type
-  const handleSubmit = async (
-  e: React.FormEvent<HTMLFormElement>
-) => {
-  e.preventDefault();
-  setError("");
-  setLoading(true);
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setError("");
+    setLoading(true);
 
-  const formData = new FormData(e.currentTarget);
+    const formData = new FormData(e.currentTarget);
 
-  const data = {
-    name: formData.get("name") as string,
-    email: (formData.get("email") as string).toLowerCase(),
-    password: formData.get("password") as string,
-    phone: formData.get("phone") as string,
-    address: formData.get("address") as string,
+    const data = {
+      name: formData.get("name") as string,
+      email: (formData.get("email") as string).toLowerCase(),
+      password: formData.get("password") as string,
+      phone: formData.get("phone") as string,
+      address: formData.get("address") as string,
+    };
+
+    try {
+      const res = await fetch("/api/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+
+      const result = await res.json();
+      setLoading(false);
+
+      if (!res.ok) {
+        setError(result.message || "Registration failed");
+        return;
+      }
+
+      // ✅ Redirect to OTP verify page
+      router.push(`/verify-otp?email=${data.email}`);
+    } catch (err) {
+      setLoading(false);
+      setError("Server error. Please try again.");
+      console.error(err);
+    }
   };
-
-  const res = await fetch("/api/auth/register", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data),
-  });
-
-  const result = await res.json();
-  setLoading(false);
-
-  if (!res.ok) {
-    setError(result.message || "Registration failed");
-    return;
-  }
-
-  router.push("/login");
-};
-
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
@@ -55,9 +59,7 @@ export default function RegisterForm() {
       >
         {/* Header */}
         <div className="mb-6 text-center">
-          <h2 className="text-2xl font-bold text-gray-800">
-            Create Account
-          </h2>
+          <h2 className="text-2xl font-bold text-gray-800">Create Account</h2>
           <p className="text-sm text-gray-500 mt-1">
             Join and start managing your account
           </p>

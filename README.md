@@ -13,6 +13,7 @@ The main objective of this project is to:
 - Reduce manual tracking
 - Provide real-time parcel status updates
 - Implement role-based access control
+- Enable secure OTP-based authentication for users
 
 ---
 

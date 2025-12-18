@@ -54,6 +54,11 @@ export const authOptions: NextAuthOptions = {
             console.log("User not found");
             return null;
           }
+          // ❌ Check if email verified
+          if (!user.isVerified) {
+            console.log("User not verified");
+            throw new Error("Please verify your account via OTP");
+          }
 
           const isValid = await bcrypt.compare(
             credentials.password,
