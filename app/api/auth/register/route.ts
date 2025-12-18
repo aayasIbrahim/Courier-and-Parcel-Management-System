@@ -4,7 +4,7 @@ import dbConnect from "@/lib/db";
 import User from "@/models/User";
 import Otp from "@/models/Otp";
 import { generateOTP } from "@/lib/otp";
-import { sendEmail } from "@/lib/mail"; // 
+import { sendEmail } from "@/lib/mail"; //
 
 export async function POST(req: NextRequest) {
   try {
@@ -52,12 +52,22 @@ export async function POST(req: NextRequest) {
       otp: hashedOtp,
       expiresAt: new Date(Date.now() + 5 * 60 * 1000), // 5 min expiry
     });
- console.log("📧 Sending OTP email to:", email);
+    console.log("📧 Sending OTP email to:", email);
     // Send OTP via email
     await sendEmail({
       to: email,
-      subject: "Verify your account - OTP",
-      html: `<p>Hello ${name},</p><p>Your OTP is <b>${otp}</b>. It expires in 5 minutes.</p>`,
+      subject: "🔒 Verify Your Account – OTP Code",
+      html: `
+    <div style="font-family: Arial, sans-serif; color: #333; line-height: 1.5;">
+      <h2 style="color: #0d6efd;">Hello ${name},</h2>
+      <p>Thank you for creating an account with us. To complete your registration, please use the OTP below:</p>
+      <p style="font-size: 24px; font-weight: bold; color: #0d6efd; margin: 20px 0;">${otp}</p>
+      <p>This OTP is valid for <strong>2 minutes</strong>. Please do not share it with anyone.</p>
+      <hr style="margin: 20px 0; border: none; border-top: 1px solid #ddd;" />
+      <p style="font-size: 12px; color: #777;">If you did not request this, please ignore this email.</p>
+      <p style="font-size: 12px; color: #777;">Developed with ❤️ by Ayas Ibrahim</p>
+    </div>
+  `,
     });
 
     return NextResponse.json(
@@ -66,9 +76,6 @@ export async function POST(req: NextRequest) {
     );
   } catch (err) {
     console.error("Register API Error:", err);
-    return NextResponse.json(
-      { message: "Server error" },
-      { status: 500 }
-    );
+    return NextResponse.json({ message: "Server error" }, { status: 500 });
   }
 }
