@@ -18,7 +18,7 @@ export const sendEmail = async ({
   html: string;
 }) => {
   try {
-    console.log("📧 Sending email to:", to);
+    // console.log("📧 Sending email to:", to);
 
     const transporter = nodemailer.createTransport({
       service: "gmail",
@@ -38,7 +38,7 @@ export const sendEmail = async ({
       html,
     });
 
-    console.log("✅ Email sent! Message ID:", info.messageId);
+    // console.log("✅ Email sent! Message ID:", info.messageId);
     return info;
   } catch (err) {
     console.error("❌ Email send failed:", err);
