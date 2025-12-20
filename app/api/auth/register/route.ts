@@ -4,7 +4,7 @@ import dbConnect from "@/lib/db";
 import User from "@/models/User";
 import Otp from "@/models/Otp";
 import { generateOTP } from "@/lib/otp";
-import { sendEmail } from "@/lib/mail"; //
+import { sendEmail } from "@/lib/mail";
 
 export async function POST(req: NextRequest) {
   try {
@@ -19,7 +19,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // 🔍 Check existing user by email
+    // 🔍 Check existing user
     const existingUser = await User.findOne({ email });
 
     if (existingUser && existingUser.isVerified) {
@@ -54,39 +54,67 @@ export async function POST(req: NextRequest) {
       });
     }
 
-    // 🔒 Check for existing OTP (cooldown to prevent spam)
-    const existingOtp = await Otp.findOne({ email });
-    if (existingOtp && existingOtp.expiresAt > new Date()) {
+    /* ================= RATE LIMITING START ================= */
+
+    // ⏱️ Max 3 OTP per 10 minutes
+    const TEN_MINUTES = 10 * 60 * 1000;
+
+    const otpCount = await Otp.countDocuments({
+      email,
+      createdAt: { $gte: new Date(Date.now() - TEN_MINUTES) },
+    });
+
+    if (otpCount >= 3) {
       return NextResponse.json(
-        { message: "OTP already sent. Please wait before requesting again." },
+        {
+          message:
+            "Too many OTP requests. Please try again after 10 minutes.",
+        },
         { status: 429 }
       );
     }
 
+    // ⏳ Cooldown: active OTP exists
+    const activeOtp = await Otp.findOne({
+      email,
+      expiresAt: { $gt: new Date() },
+    });
+
+    if (activeOtp) {
+      return NextResponse.json(
+        {
+          message:
+            "OTP already sent. Please wait until it expires before requesting again.",
+        },
+        { status: 429 }
+      );
+    }
+
+    /* ================= RATE LIMITING END ================= */
+
     const otp = generateOTP(6);
     const hashedOtp = await bcrypt.hash(otp, 10);
 
-    await Otp.deleteMany({ email }); // remove old OTP
+    // 🧹 Cleanup old OTPs
+    await Otp.deleteMany({ email });
+
     await Otp.create({
       email,
       otp: hashedOtp,
       expiresAt: new Date(Date.now() + 5 * 60 * 1000), // 5 min
+      createdAt: new Date(),
     });
-
-    console.log("📧 Sending OTP email to:", email);
 
     await sendEmail({
       to: email,
       subject: "🔒 Verify Your Account – OTP Code",
       html: `
-        <div style="font-family: Arial, sans-serif; color: #333; line-height: 1.5;">
-          <h2 style="color: #0d6efd;">Hello ${name},</h2>
-          <p>Thank you for creating an account with us. To complete your registration, please use the OTP below:</p>
-          <p style="font-size: 24px; font-weight: bold; color: #0d6efd; margin: 20px 0;">${otp}</p>
-          <p>This OTP is valid for <strong>5 minutes</strong>. Please do not share it with anyone.</p>
-          <hr style="margin: 20px 0; border: none; border-top: 1px solid #ddd;" />
-          <p style="font-size: 12px; color: #777;">If you did not request this, please ignore this email.</p>
-          <p style="font-size: 12px; color: #777;">Developed with ❤️ by Ayas Ibrahim</p>
+        <div style="font-family: Arial, sans-serif; color: #333;">
+          <h2>Hello ${name},</h2>
+          <p>Your OTP is:</p>
+          <p style="font-size:24px;font-weight:bold;">${otp}</p>
+          <p>This code will expire in 5 minutes.</p>
+          <p style="font-size:12px;color:#777;">Do not share this code.</p>
         </div>
       `,
     });
@@ -103,5 +131,3 @@ export async function POST(req: NextRequest) {
     );
   }
 }
-
-
