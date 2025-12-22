@@ -52,7 +52,7 @@ export async function PATCH(
 // -------------------- DELETE — Delete Parcel --------------------
 export async function DELETE(
   req: NextRequest,
-  context: { params: Promise<{ id: string }> } // 👈 note Promise
+  context: { params: Promise<{ id: string }> }
 ) {
   await connectDB();
   const { id } = await context.params; // 👈 await here
