@@ -44,7 +44,7 @@ export async function DELETE(
   context: { params: Promise<{ id: string }> }
 ) {
   try {
-    // 🔑 IMPORTANT FIX
+    
     const { id } = await context.params;
 
     await dbConnect();
