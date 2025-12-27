@@ -4,27 +4,39 @@ import { useState } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { verifyRole } from "@/utils/verifyRole";
-import { Eye, EyeOff, Loader2 } from "lucide-react";
 
-export default function LoginForm() {
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardAction,
+  CardContent,
+  CardFooter,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+type LoginFormProps = {
+  onSuccess?: () => void;
+  onSwitchToRegister?: () => void;
+};
+export default function LoginForm({
+  onSuccess,
+  onSwitchToRegister,
+}: LoginFormProps) {
   const router = useRouter();
 
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
 
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError("");
     setLoading(true);
 
-    const formData = new FormData(e.currentTarget);
-    const email = (formData.get("email") as string)?.toLowerCase();
-    const password = formData.get("password") as string;
-
     const res = await signIn("credentials", {
       redirect: false,
-      email,
+      email: email.toLowerCase(),
       password,
     });
 
@@ -33,6 +45,7 @@ export default function LoginForm() {
       setError("Invalid email or password");
       return;
     }
+    onSuccess?.();
 
     const sessionRes = await fetch("/api/auth/session");
     const session = await sessionRes.json();
@@ -43,92 +56,61 @@ export default function LoginForm() {
   };
 
   return (
-    <div>
-      <form
-        onSubmit={handleLogin}
-        className="w-full max-w-md rounded-2xl bg-white p-6 sm:p-8 shadow-lg transition text-black"
-      >
-        {/* Header */}
-        <div className="mb-6 text-center">
-          <h2 className="text-2xl sm:text-3xl font-bold text-gray-800">
-            Welcome
-          </h2>
-          <p className="mt-1 text-sm text-gray-500">Sign in to continue</p>
-        </div>
+    <div className="w-full max-w-md mx-auto rounded-2xl bg-white p-8 ">
+      <Card className="w-full max-w-md shadow-lg">
+        <form onSubmit={handleLogin}>
+          <CardContent className="space-y-4">
+            {/* Email */}
+            <div className="space-y-1">
+              <Label htmlFor="email">Email</Label>
+              <Input
+                id="email"
+                type="email"
+                placeholder="m@example.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
+            </div>
 
-        {/* Error */}
-        {error && (
-          <div className="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-2 text-sm text-red-600">
-            {error}
-          </div>
-        )}
+            {/* Password */}
+            <div className="space-y-1">
+              <Label htmlFor="password">Password</Label>
+              <Input
+                id="password"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+            </div>
 
-        {/* Email */}
-        <div className="mb-4">
-          <label className="mb-1 block text-sm font-medium text-gray-700">
-            Email address
-          </label>
-          <input
-            type="email"
-            name="email"
-            required
-            placeholder="you@example.com"
-            className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
-          />
-        </div>
+            {/* Error */}
+            {error && (
+              <p className="text-sm text-red-500 text-center">{error}</p>
+            )}
+          </CardContent>
 
-        {/* Password */}
-        <div className="mb-5">
-          <label className="mb-1 block text-sm font-medium text-gray-700">
-            Password
-          </label>
+          <CardFooter className="flex flex-col gap-3 mt-5">
+            <Button type="submit" className="w-full" disabled={loading}>
+              {loading ? "Logging in..." : "Login"}
+            </Button>
 
-          <div className="relative">
-            <input
-              type={showPassword ? "text" : "password"}
-              name="password"
-              required
-              placeholder="••••••••"
-              autoComplete="new-password"
-              className="w-full rounded-lg border border-gray-300 px-3 py-2.5 pr-10 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
-            />
-
-            <button
-              type="button"
-              onClick={() => setShowPassword(!showPassword)}
-              className="absolute inset-y-0 right-3 flex items-center text-gray-500 hover:text-gray-700"
-              aria-label="Toggle password visibility"
-            >
-              {showPassword ? (
-                <EyeOff className="h-4 w-4" />
-              ) : (
-                <Eye className="h-4 w-4" />
-              )}
-            </button>
-          </div>
-        </div>
-
-        {/* Submit */}
-        <button
-          type="submit"
-          disabled={loading}
-          className="flex w-full items-center justify-center gap-2 rounded-lg bg-blue-600 py-2.5 text-sm font-medium text-white transition hover:bg-blue-700 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-70"
-        >
-          {loading && <Loader2 className="h-4 w-4 animate-spin" />}
-          {loading ? "Signing in..." : "Sign In"}
-        </button>
-
-        {/* Footer */}
-        <p className="mt-5 text-center text-sm text-gray-600">
-          Don’t have an account?{" "}
-          <a
-            href="/register"
-            className="font-medium text-blue-600 hover:underline"
-          >
-            Register
-          </a>
-        </p>
-      </form>
+            <CardAction>
+              <p className="text-sm text-center mt-4">
+                Don’t have an account?{" "}
+                <button
+                  type="button"
+                  onClick={() => onSwitchToRegister?.()}
+                  className="text-blue-600 hover:underline"
+                >
+                  Sign up
+                </button>
+              </p>
+            </CardAction>
+          </CardFooter>
+        </form>
+      </Card>
     </div>
   );
 }
