@@ -64,7 +64,7 @@ For assignment evaluation, use the following demo accounts:
 - Next.js
 - React
 - TypeScript
-- Tailwind CSS
+- Tailwind CSS(Shadcn,deshyui)
 - Leaflet (Map integration)
 - Socket.IO (Real-time updates)
 
