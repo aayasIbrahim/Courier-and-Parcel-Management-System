@@ -1,12 +1,15 @@
 import Footer from "@/components/ul/Footer";
-import Hero from "@/components/ul/Hero";
 import Nav from "@/components/ul/Nav";
 
-export default function Home() {
+export default function PublicLayOut({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <>
       <Nav />
-      <Hero />
+      {children}
       <Footer />
     </>
   );
