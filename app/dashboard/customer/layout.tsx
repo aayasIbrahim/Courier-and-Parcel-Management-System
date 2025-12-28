@@ -1,5 +1,5 @@
 "use client";
-import Layout from "@/components/ul/Layout";
+import Layout from "@/components/ui/ul/Layout";
 import { customerLinks } from "@/data/sidebarLinks";
 import { useSession } from "next-auth/react";
 

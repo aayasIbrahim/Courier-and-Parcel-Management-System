@@ -2,8 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 
-
-import AuthDrawer from "../auth/AuthDrawer";
+import AuthDrawer from "../../auth/AuthDrawer";
 import Link from "next/link";
 
 function Nav() {
@@ -53,13 +52,14 @@ function Nav() {
               tabIndex={-1}
               className="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow"
             >
-            
               <li>
                 <a>Parent</a>
                 <ul className="p-2">
-                  <li>  <li>
-                <Link href="/about">Item 1</Link>
-              </li>
+                  <li>
+                    {" "}
+                    <li>
+                      <Link href="/about">Item 1</Link>
+                    </li>
                     <a>Submenu 1</a>
                   </li>
                   <li>
@@ -98,7 +98,7 @@ function Nav() {
           </ul>
         </div>
         <div className="navbar-end">
-          <AuthDrawer/>
+          <AuthDrawer />
         </div>
       </div>
     </header>

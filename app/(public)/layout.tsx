@@ -1,5 +1,5 @@
-import Footer from "@/components/ul/Footer";
-import Nav from "@/components/ul/Nav";
+import Footer from "@/components/ui/ul/Footer";
+import Nav from "@/components/ui/ul/Nav";
 
 export default function PublicLayOut({
   children,

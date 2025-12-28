@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { FileText, Download, BarChart3 } from "lucide-react";
-import SummaryCard from "@/components/ul/SummaryCard";
+import SummaryCard from "@/components/ui/ul/SummaryCard";
 
 interface ReportSummary {
   totalParcels: number;
@@ -37,7 +37,7 @@ export default function AdminReportsPage() {
     fetchSummary();
   }, []);
   console.log(summary);
- console.log("SUMMARY:", summary?.totalParcels);
+  console.log("SUMMARY:", summary?.totalParcels);
   return (
     <div className="p-4 md:p-6 space-y-6">
       {/* Header */}
@@ -47,15 +47,11 @@ export default function AdminReportsPage() {
       </div>
 
       {/* Loading */}
-      {loading && (
-        <p className="text-gray-500 text-sm">Loading reports...</p>
-      )}
+      {loading && <p className="text-gray-500 text-sm">Loading reports...</p>}
 
       {/* Error */}
       {error && (
-        <div className="bg-red-100 text-red-600 p-3 rounded">
-          {error}
-        </div>
+        <div className="bg-red-100 text-red-600 p-3 rounded">{error}</div>
       )}
 
       {/* Summary Cards */}
@@ -108,8 +104,6 @@ export default function AdminReportsPage() {
             <Download className="h-4 w-4" />
             Export CSV
           </a>
-
-         
         </div>
       </div>
     </div>

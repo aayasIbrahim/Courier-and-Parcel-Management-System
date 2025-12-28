@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import Pagination from "../ul/Pagintaion"; // your pagination component
+import Pagination from "../ui/ul/Pagintaion"; // your pagination component
 
 interface User {
   _id: string;
@@ -102,7 +102,9 @@ const UsersTable: React.FC<UsersTableProps> = ({ roleFilter }) => {
                 <div className="text-gray-700 text-sm font-medium truncate">
                   {user.name}
                 </div>
-                <div className="text-gray-500 text-xs truncate">{user.email}</div>
+                <div className="text-gray-500 text-xs truncate">
+                  {user.email}
+                </div>
               </div>
 
               {/* Phone & Address */}
@@ -142,7 +144,11 @@ const UsersTable: React.FC<UsersTableProps> = ({ roleFilter }) => {
 
       {/* Pagination */}
       <div className="mt-4">
-        <Pagination page={page} totalPages={totalPages} onPageChange={setPage} />
+        <Pagination
+          page={page}
+          totalPages={totalPages}
+          onPageChange={setPage}
+        />
       </div>
     </>
   );

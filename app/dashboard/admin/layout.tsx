@@ -1,6 +1,6 @@
 "use client";
-import Layout from "@/components/ul/Layout";
-import {adminLinks } from "@/data/sidebarLinks";
+import Layout from "@/components/ui/ul/Layout";
+import { adminLinks } from "@/data/sidebarLinks";
 import { useSession } from "next-auth/react";
 
 export default function AdminDashboard({
@@ -14,7 +14,7 @@ export default function AdminDashboard({
       title="Admin Dashboard"
       links={adminLinks}
       role="Admin"
-      username={session?.user.name|| "Admin"}
+      username={session?.user.name || "Admin"}
     >
       {children}
     </Layout>

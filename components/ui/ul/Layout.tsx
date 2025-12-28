@@ -2,17 +2,23 @@
 
 import { useState } from "react";
 import Sidebar, { SidebarLink } from "./Sidebar";
-import Navbar from "@/components/ul/Navber";
+import Navbar from "@/components/ui/ul/Navber";
 
 interface LayoutProps {
-  title: string;               // Dashboard title
-  links: SidebarLink[];        // Sidebar links
-  role?: string;               // User role
-  username?: string;           // User name
+  title: string; // Dashboard title
+  links: SidebarLink[]; // Sidebar links
+  role?: string; // User role
+  username?: string; // User name
   children: React.ReactNode;
 }
 
-export default function Layout({ title, links, role, username, children }: LayoutProps) {
+export default function Layout({
+  title,
+  links,
+  role,
+  username,
+  children,
+}: LayoutProps) {
   const [isSidebarOpen, setSidebarOpen] = useState(false);
 
   return (

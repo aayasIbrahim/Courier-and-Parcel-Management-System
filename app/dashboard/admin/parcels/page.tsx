@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Package, Loader2 } from "lucide-react";
-import Pagination from "@/components/ul/Pagintaion"; // adjust path if needed
+import Pagination from "@/components/ui/ul/Pagintaion"; // adjust path if needed
 
 interface Parcel {
   _id: string;
@@ -21,7 +21,6 @@ export default function AdminAllParcelsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  
 
   useEffect(() => {
     const fetchParcels = async () => {
@@ -48,11 +47,16 @@ export default function AdminAllParcelsPage() {
   const getStatusBadge = (status: string) => {
     const base = "px-2 py-1 rounded text-xs font-medium";
     switch (status) {
-      case "Delivered": return `${base} bg-green-100 text-green-700`;
-      case "Pending": return `${base} bg-yellow-100 text-yellow-700`;
-      case "Failed": return `${base} bg-red-100 text-red-700`;
-      case "In Transit": return `${base} bg-blue-100 text-blue-700`;
-      default: return base;
+      case "Delivered":
+        return `${base} bg-green-100 text-green-700`;
+      case "Pending":
+        return `${base} bg-yellow-100 text-yellow-700`;
+      case "Failed":
+        return `${base} bg-red-100 text-red-700`;
+      case "In Transit":
+        return `${base} bg-blue-100 text-blue-700`;
+      default:
+        return base;
     }
   };
 
@@ -73,7 +77,9 @@ export default function AdminAllParcelsPage() {
       )}
 
       {/* Error */}
-      {error && <div className="bg-red-100 text-red-600 p-3 rounded">{error}</div>}
+      {error && (
+        <div className="bg-red-100 text-red-600 p-3 rounded">{error}</div>
+      )}
 
       {/* Desktop Table */}
       {!loading && currentParcels.length > 0 && (
@@ -98,8 +104,12 @@ export default function AdminAllParcelsPage() {
                     <span className={getStatusBadge(p.status)}>{p.status}</span>
                   </td>
                   <td className="p-3">{p.paymentType}</td>
-                  <td className="p-3 text-xs">{p.pickupAddress} → {p.deliveryAddress}</td>
-                  <td className="p-3">{new Date(p.createdAt).toLocaleDateString()}</td>
+                  <td className="p-3 text-xs">
+                    {p.pickupAddress} → {p.deliveryAddress}
+                  </td>
+                  <td className="p-3">
+                    {new Date(p.createdAt).toLocaleDateString()}
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -127,10 +137,18 @@ export default function AdminAllParcelsPage() {
                 <span className="font-mono text-xs">{p._id}</span>
                 <span className={getStatusBadge(p.status)}>{p.status}</span>
               </div>
-              <div className="text-sm"><strong>Type:</strong> {p.type}</div>
-              <div className="text-sm"><strong>Payment:</strong> {p.paymentType}</div>
-              <div className="text-xs text-gray-600">{p.pickupAddress} → {p.deliveryAddress}</div>
-              <div className="text-xs text-gray-500">{new Date(p.createdAt).toLocaleDateString()}</div>
+              <div className="text-sm">
+                <strong>Type:</strong> {p.type}
+              </div>
+              <div className="text-sm">
+                <strong>Payment:</strong> {p.paymentType}
+              </div>
+              <div className="text-xs text-gray-600">
+                {p.pickupAddress} → {p.deliveryAddress}
+              </div>
+              <div className="text-xs text-gray-500">
+                {new Date(p.createdAt).toLocaleDateString()}
+              </div>
             </div>
           ))}
 
@@ -148,7 +166,9 @@ export default function AdminAllParcelsPage() {
       )}
 
       {/* No parcels */}
-      {!loading && parcels.length === 0 && <p className="text-gray-500">No parcels found.</p>}
+      {!loading && parcels.length === 0 && (
+        <p className="text-gray-500">No parcels found.</p>
+      )}
     </div>
   );
 }

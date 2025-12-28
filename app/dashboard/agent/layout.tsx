@@ -1,5 +1,5 @@
 "use client";
-import Layout from "@/components/ul/Layout";
+import Layout from "@/components/ui/ul/Layout";
 import { agentLinks } from "@/data/sidebarLinks";
 import { useSession } from "next-auth/react";
 
@@ -14,7 +14,7 @@ export default function AgentDashboard({
       title="Agent Dashboard"
       links={agentLinks}
       role="Agent"
-      username={session?.user.name|| "Agent"}
+      username={session?.user.name || "Agent"}
     >
       {children}
     </Layout>

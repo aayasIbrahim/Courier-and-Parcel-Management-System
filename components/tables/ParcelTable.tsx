@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import Pagination from "@/components/ul/Pagintaion";
+import Pagination from "@/components/ui/ul/Pagintaion";
 
 interface Parcel {
   _id: string;

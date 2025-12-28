@@ -1,4 +1,4 @@
-import ProfileForm from "@/components/ul/ProfileForm";
+import ProfileForm from "@/components/ui/ul/ProfileForm";
 import React from "react";
 
 function page() {
